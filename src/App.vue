@@ -9,7 +9,8 @@
           Uma nova interface para o Contex.
         </h1>
         <p class="mt-6 max-w-xl text-lg leading-8 text-slate-300">
-          Projeto Vue independente, preparado para consumir o backend MVC existente e evoluir por modulos.
+          Projeto Vue independente, preparado para consumir o backend MVC existente e evoluir por
+          modulos.
         </p>
       </section>
     </div>
