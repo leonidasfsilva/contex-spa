@@ -1,5 +1,30 @@
-# Vue 3 + Vite
+# Contex SPA
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Frontend moderno do Contex, desenvolvido com Vue.js, Vite e Tailwind CSS.
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## Relação com o Contex MVC
+
+Este repositório é o frontend filho do projeto Contex. O backend MVC continua sendo a fonte das regras de negócio e dos dados consumidos pela aplicação.
+
+## Ferramentas compartilhadas
+
+A automação do Trello permanece no projeto pai:
+
+```text
+C:\laragon\www\contex\.agents\trello\trello.ps1
+```
+
+O `contex-spa` depende dessa ferramenta para o acompanhamento do roadmap e das tarefas do projeto. Não existe uma cópia local da integração Trello neste repositório.
+
+## Desenvolvimento
+
+```bash
+npm install
+npm run dev
+```
+
+## Build
+
+```bash
+npm run build
+```
