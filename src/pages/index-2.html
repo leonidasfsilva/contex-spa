@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  
+<!-- Mirrored from demo.dashboardpack.com/apex-html/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 20 Jul 2026 06:51:07 GMT -->
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Â· Apex</title>
+    <meta name="description" content="Apex Dashboard â€” framework-free HTML build." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2316a34a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'/%3E%3C/svg%3E" />
+
+    <!-- Apply theme + sidebar state before first paint to avoid any flash. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("apex-theme") || "system";
+          var dark =
+            t === "dark" ||
+            (t === "system" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var el = document.documentElement;
+          el.classList.toggle("dark", dark);
+          el.style.colorScheme = dark ? "dark" : "light";
+          if (localStorage.getItem("apex-sidebar-collapsed") === "true") {
+            el.dataset.sidebarCollapsed = "true";
+          }
+                  var _ce=document.documentElement;var _ca=localStorage.getItem("apex-accent");if(_ca)_ce.dataset.accent=_ca;var _cr=localStorage.getItem("apex-radius");if(_cr)_ce.style.setProperty("--radius",_cr);var _cd=localStorage.getItem("apex-dir");if(_cd)_ce.dir=_cd;
+        } catch (e) {}
+      })();
+    </script>
+    <script type="module" crossorigin src="/assets/icons-CvCjpvea.js"></script>
+    <script type="module" crossorigin src="/assets/toast-CYCf26qJ.js"></script>
+    <script type="module" crossorigin src="/assets/tabs-CD3ADGpv.js"></script>
+    <script type="module" crossorigin src="/assets/main-CaHxEhGx.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/icons-eA5UIe3R.css">
+    <script type="module" src="/components/sidebar.js"></script>
+  </head>
+  <body>
+    <div class="flex min-h-screen bg-background">
+      <contex-sidebar active="index.html"></contex-sidebar>
+
+      <div class="apex-content flex min-h-screen flex-1 flex-col">
+        <apex-header></apex-header>
+
+        <main id="main-content" class="flex-1 p-4 sm:p-6">
+          <!-- Page title -->
+          <div class="mb-6">
+            <h1 class="text-2xl font-bold tracking-tight">Dashboard</h1>
+            <p class="mt-1 text-sm text-muted-foreground">
+              Welcome back â€” here's what's happening with your store today.
+            </p>
+          </div>
+
+          <!-- Stats row -->
+          <apex-stats-cards></apex-stats-cards>
+
+          <!-- Charts + side panel -->
+          <div class="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-12">
+            <apex-revenue-chart></apex-revenue-chart>
+            <apex-side-panel></apex-side-panel>
+          </div>
+
+          <!-- Orders + activity -->
+          <div class="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-12">
+            <apex-orders-table></apex-orders-table>
+            <apex-activity-feed></apex-activity-feed>
+          </div>
+        </main>
+      </div>
+    </div>
+
+  </body>
+
+<!-- Mirrored from demo.dashboardpack.com/apex-html/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 20 Jul 2026 06:51:07 GMT -->
+</html>
+

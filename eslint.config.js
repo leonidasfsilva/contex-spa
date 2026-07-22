@@ -1,17 +1,15 @@
 import js from '@eslint/js'
 import eslintConfigPrettier from 'eslint-config-prettier'
-import pluginVue from 'eslint-plugin-vue'
 import globals from 'globals'
 
 export default [
   {
-    ignores: ['dist/**', 'node_modules/**'],
+    ignores: ['assets/**', 'dist/**', 'node_modules/**'],
   },
   js.configs.recommended,
-  ...pluginVue.configs['flat/recommended'],
   eslintConfigPrettier,
   {
-    files: ['**/*.{js,mjs,cjs,vue}'],
+    files: ['**/*.{js,mjs,cjs}'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
@@ -19,8 +17,13 @@ export default [
         ...globals.browser,
       },
     },
-    rules: {
-      'vue/multi-word-component-names': 'off',
+  },
+  {
+    files: ['vite.config.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
     },
   },
 ]

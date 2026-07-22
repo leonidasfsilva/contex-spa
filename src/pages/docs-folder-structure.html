@@ -1,0 +1,116 @@
+<!doctype html><html lang="en">
+<!-- Mirrored from demo.dashboardpack.com/apex-html/docs-folder-structure.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 20 Jul 2026 06:51:08 GMT -->
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Folder Structure Â· Apex Docs</title>
+<script>(function(){try{var t=localStorage.getItem("apex-theme")||"system";var d=t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d);document.documentElement.style.colorScheme=d?"dark":"light";var _ce=document.documentElement;var _ca=localStorage.getItem("apex-accent");if(_ca)_ce.dataset.accent=_ca;var _cr=localStorage.getItem("apex-radius");if(_cr)_ce.style.setProperty("--radius",_cr);var _cd=localStorage.getItem("apex-dir");if(_cd)_ce.dir=_cd;}catch(e){}})();</script>
+  <script type="module" crossorigin src="/assets/icons-CvCjpvea.js"></script>
+  <script type="module" crossorigin src="/assets/tabs-CD3ADGpv.js"></script>
+  <script type="module" crossorigin src="/assets/docs-Xj0E4rHW.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/icons-eA5UIe3R.css">
+</head><body>
+<apex-docs-header></apex-docs-header>
+<div class="mx-auto flex max-w-7xl">
+  <div class="apex-docs-overlay" data-docs-close></div>
+  <aside class="apex-docs-aside shrink-0 border-e border-border"><apex-docs-sidebar active="docs-folder-structure.html"></apex-docs-sidebar></aside>
+  <main class="min-w-0 flex-1 px-4 py-8 sm:px-6 lg:px-12"><article class="mx-auto max-w-3xl">
+
+<h1 class="text-3xl font-bold tracking-tight">Folder Structure</h1>
+<p class="mt-3 text-base text-muted-foreground">An overview of the project directory layout and what each part is responsible for.</p>
+
+<h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Project Tree</h2>
+<pre class="apex-code"><code>apex-dashboard-html/
+â”œâ”€â”€ index.html                  # Dashboard page (MPA entry)
+â”œâ”€â”€ orders.html                 # One *.html file per route, at the root
+â”œâ”€â”€ products.html               # â€¦ customers, users, invoices, settings,
+â”œâ”€â”€ analytics.html              #    profile, pricing, support, kanban, etc.
+â”œâ”€â”€ docs.html                   # These documentation pages
+â”œâ”€â”€ auth/                       # login, register, forgot/reset password, â€¦
+â”œâ”€â”€ 404.html  403.html  500.html
+â”œâ”€â”€ vite.config.js              # Registers every page (build.rollupOptions.input)
+â”œâ”€â”€ package.json                # Scripts (dev/build/preview) + dependencies
+â”œâ”€â”€ src/
+â”‚   â”œâ”€â”€ main.js                 # App entry: registers components, inits
+â”‚   â”‚                           #   theme / tabs / forms / dialogs / segments
+â”‚   â”œâ”€â”€ docs.js                 # Docs entry (lighter â€” no charts/data-table)
+â”‚   â”œâ”€â”€ styles/
+â”‚   â”‚   â””â”€â”€ main.css            # Tailwind import + OKLCh tokens + .apex-* classes
+â”‚   â”œâ”€â”€ components/             # Light-DOM web components (one per widget)
+â”‚   â”‚   â”œâ”€â”€ apex-sidebar.js         &lt;apex-sidebar active="/orders"&gt;
+â”‚   â”‚   â”œâ”€â”€ apex-header.js          &lt;apex-header&gt;
+â”‚   â”‚   â”œâ”€â”€ apex-stats-cards.js     &lt;apex-stats-cards&gt;
+â”‚   â”‚   â”œâ”€â”€ apex-revenue-chart.js   &lt;apex-revenue-chart&gt;
+â”‚   â”‚   â”œâ”€â”€ apex-side-panel.js      &lt;apex-side-panel&gt;
+â”‚   â”‚   â”œâ”€â”€ apex-orders-table.js    &lt;apex-orders-table&gt;
+â”‚   â”‚   â”œâ”€â”€ apex-activity-feed.js   &lt;apex-activity-feed&gt;
+â”‚   â”‚   â”œâ”€â”€ apex-chart.js           &lt;apex-chart&gt;  (generic ApexCharts wrapper)
+â”‚   â”‚   â”œâ”€â”€ apex-data-table.js      &lt;apex-data-table&gt;  (JSON-configured table)
+â”‚   â”‚   â”œâ”€â”€ apex-docs-header.js     &lt;apex-docs-header&gt;
+â”‚   â”‚   â””â”€â”€ apex-docs-sidebar.js    &lt;apex-docs-sidebar active="docs.html"&gt;
+â”‚   â””â”€â”€ lib/
+â”‚       â”œâ”€â”€ theme.js            # dark/light/system, localStorage, no-flash
+â”‚       â”œâ”€â”€ icons.js            # curated Lucide set + renderIcons()
+â”‚       â”œâ”€â”€ data.js             # mock data (swap for your API/server data)
+â”‚       â”œâ”€â”€ charts.js           # ApexCharts color/theme helpers
+â”‚       â”œâ”€â”€ tabs.js             # tab switching
+â”‚       â””â”€â”€ toast.js            # toast notifications
+â””â”€â”€ blade-starter-kit/          # Laravel Blade integration (see its README)</code></pre>
+
+<h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Key Directories</h2>
+
+<h3 class="mt-6 mb-2 text-base font-semibold"><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">*.html</code> (project root)</h3>
+<p class="mb-4 text-sm leading-7 text-foreground/80">Each route is a standalone HTML file at the project root &mdash; <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">index.html</code> is the dashboard, and there is one file per page (orders, products, settings, the auth screens under <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">auth/</code>, error pages, and so on). Every page links a tiny no-flash theme script in its <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;head&gt;</code>, drops in the shared <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-sidebar&gt;</code> and <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-header&gt;</code> chrome, and loads the app entry with <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;script type="module" src="/src/main.js"&gt;</code>.</p>
+
+<h3 class="mt-6 mb-2 text-base font-semibold"><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">vite.config.js</code></h3>
+<p class="mb-4 text-sm leading-7 text-foreground/80">The single source of truth for which pages exist. Because this is a multi-page app, every <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">*.html</code> file must be listed under <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">build.rollupOptions.input</code> so Vite emits it as a standalone page in the build. To add a route, create the HTML file and add one line here.</p>
+
+<h3 class="mt-6 mb-2 text-base font-semibold"><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">src/main.js</code> &amp; <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">src/docs.js</code></h3>
+<p class="mb-4 text-sm leading-7 text-foreground/80">The two entry points. <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">main.js</code> imports the stylesheet, registers the dashboard web components, and initializes theme, tabs, segmented controls, demo-form validation, and native dialogs. <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">docs.js</code> is a lighter entry for the documentation pages &mdash; it skips the charts and data-table and instead registers the docs header/sidebar and adds the copy button to each code block.</p>
+
+<h3 class="mt-6 mb-2 text-base font-semibold"><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">src/styles/main.css</code></h3>
+<p class="mb-4 text-sm leading-7 text-foreground/80">The single stylesheet. It imports Tailwind CSS v4, defines the OKLCh design tokens for both <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">:root</code> (light) and <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">.dark</code>, and declares the reusable component classes such as <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">.apex-card</code>, <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">.apex-btn</code>, and <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">.apex-input</code>.</p>
+
+<h3 class="mt-6 mb-2 text-base font-semibold"><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">src/components/</code></h3>
+<p class="mb-4 text-sm leading-7 text-foreground/80">One light-DOM web component per widget, each defined as an <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">apex-*</code> custom element you use as an HTML tag. Because they render in light DOM (no Shadow DOM), Tailwind utilities and global CSS apply normally and the markup is copy-pasteable into any template language. Components render their own Lucide icons and ApexCharts instances on mount, and re-theme automatically when the color scheme changes. Importing a component file in an entry is what registers (and tree-shakes) it.</p>
+
+<h3 class="mt-6 mb-2 text-base font-semibold"><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">src/lib/</code></h3>
+<p class="mb-4 text-sm leading-7 text-foreground/80">Shared helpers used across components and pages:</p>
+<ul class="mb-4 ml-5 list-disc space-y-1.5 text-sm text-foreground/80">
+  <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">theme.js</code> &mdash; manages dark/light/system, persists to <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">localStorage</code>, and pairs with the no-flash inline head script</li>
+  <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">icons.js</code> &mdash; the curated Lucide icon set plus <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">renderIcons()</code>, which replaces every <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">data-lucide</code> attribute with its SVG</li>
+  <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">data.js</code> &mdash; mock data for the widgets; swap this for your own API or server data</li>
+  <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">charts.js</code> &mdash; ApexCharts color/theme helpers that resolve chart colors from the CSS tokens</li>
+  <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">tabs.js</code> &mdash; generic tab switching</li>
+  <li><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">toast.js</code> &mdash; lightweight toast notifications</li>
+</ul>
+
+<h3 class="mt-6 mb-2 text-base font-semibold"><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">blade-starter-kit/</code></h3>
+<p class="mb-4 text-sm leading-7 text-foreground/80">A standalone Laravel Blade integration that wires the components through Laravel&rsquo;s built-in Vite pipeline. It demonstrates both server-rendered-partial and drop-in-component patterns. See its own README for details.</p>
+
+<h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Adding a Page</h2>
+<p class="mb-4 text-sm leading-7 text-foreground/80">Pages are plain HTML, so adding one is two steps: copy an existing page&rsquo;s <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;head&gt;</code> and shell, then register the file in <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">vite.config.js</code>.</p>
+<ol class="mb-4 ml-5 list-decimal space-y-1.5 text-sm text-foreground/80">
+  <li>Create <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">your-page.html</code> at the root, change the <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;main&gt;</code> content and the <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">active</code> attribute on <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-sidebar&gt;</code>.</li>
+  <li>Add it to the input map in <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">vite.config.js</code>.</li>
+</ol>
+<pre class="apex-code"><code>input: {
+  main: resolve(import.meta.dirname, "index.html"),
+  yourPage: resolve(import.meta.dirname, "your-page.html"),
+}</code></pre>
+<p class="mb-4 text-sm leading-7 text-foreground/80">The shared chrome (<code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-sidebar&gt;</code>, <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-header&gt;</code>) is defined once and reused, so there is no copy-pasted navigation markup to keep in sync.</p>
+
+<h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Next Steps</h2>
+<p class="mb-4 text-sm leading-7 text-foreground/80">Head back to the <a href="/docs-getting-started.html" class="font-medium text-primary hover:underline">Installation</a> guide if you have not run the project yet, or return to the <a href="/docs.html" class="font-medium text-primary hover:underline">Introduction</a> for the feature overview.</p>
+
+<div class="mt-12 flex items-center justify-between gap-3 border-t border-border pt-6">
+  <a href="/docs-getting-started.html" class="apex-btn apex-btn-outline">
+    <i data-lucide="arrow-left" class="h-4 w-4"></i> Installation
+  </a>
+</div>
+
+</article></main>
+</div>
+</body>
+<!-- Mirrored from demo.dashboardpack.com/apex-html/docs-folder-structure.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 20 Jul 2026 06:51:08 GMT -->
+</html>
+

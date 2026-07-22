@@ -1,0 +1,212 @@
+<!doctype html><html lang="en">
+<!-- Mirrored from demo.dashboardpack.com/apex-html/docs-theming.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 20 Jul 2026 06:51:24 GMT -->
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Theming Â· Apex Docs</title>
+<script>(function(){try{var t=localStorage.getItem("apex-theme")||"system";var d=t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d);document.documentElement.style.colorScheme=d?"dark":"light";}catch(e){}})();</script>
+  <script type="module" crossorigin src="/assets/icons-CvCjpvea.js"></script>
+  <script type="module" crossorigin src="/assets/tabs-CD3ADGpv.js"></script>
+  <script type="module" crossorigin src="/assets/docs-Xj0E4rHW.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/icons-eA5UIe3R.css">
+</head><body>
+<apex-docs-header></apex-docs-header>
+<div class="mx-auto flex max-w-7xl">
+  <div class="apex-docs-overlay" data-docs-close></div>
+  <aside class="apex-docs-aside shrink-0 border-e border-border"><apex-docs-sidebar active="docs-theming.html"></apex-docs-sidebar></aside>
+  <main class="min-w-0 flex-1 px-4 py-8 sm:px-6 lg:px-12"><article class="mx-auto max-w-3xl">
+
+    <h1 class="text-3xl font-bold tracking-tight">Theming</h1>
+    <p class="mt-3 text-base text-muted-foreground">Learn how the color system works and how to customize the look and feel of Apex Dashboard &mdash; the framework-free HTML build.</p>
+
+    <div class="my-4 rounded-lg border border-primary/30 bg-primary/5 p-4 text-sm text-foreground/80">
+      <strong>Two ways to change colors.</strong> For a quick preview, open the <strong>theme customizer</strong> (the palette icon in the header) to switch accent color, theme, border radius, and direction live &mdash; your choice is saved to <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">localStorage</code> and re-applied on every page. To set your brand color <em>permanently</em>, edit the <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">--primary</code> token in <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">src/styles/main.css</code> (shown below).
+    </div>
+
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">OKLCh Color Tokens</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">All colors are defined as CSS custom properties using the <strong class="text-foreground">OKLCh</strong> color space. OKLCh provides perceptually uniform lightness, which makes it easier to build consistent palettes and keep light and dark variants in balance. Every token lives in a single stylesheet: <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">src/styles/main.css</code>.</p>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">There are two source-of-truth blocks &mdash; <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">:root</code> holds the light-mode values and <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">.dark</code> overrides them for dark mode:</p>
+    <pre class="apex-code"><code>:root {
+  --radius: 0.625rem;
+  --background: oklch(0.985 0.002 230);
+  --foreground: oklch(0.155 0.015 230);
+  --card: oklch(1 0 0);
+  --primary: oklch(0.55 0.175 160);
+  --primary-foreground: oklch(0.985 0.002 230);
+  --muted: oklch(0.96 0.005 230);
+  --border: oklch(0.922 0.005 230);
+  --ring: oklch(0.55 0.175 160);
+  /* ...more tokens */
+}
+
+.dark {
+  --background: oklch(0.075 0 0);
+  --foreground: oklch(0.922 0.005 230);
+  --card: oklch(0.19 0 0);
+  --primary: oklch(0.65 0.19 160);
+  --border: oklch(0.28 0 0);
+  --ring: oklch(0.65 0.19 160);
+  /* ...more tokens */
+}</code></pre>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">The OKLCh format is <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">oklch(lightness chroma hue)</code> where lightness is 0&ndash;1, chroma is 0&ndash;0.4, and hue is 0&ndash;360 degrees. Tailwind CSS v4 maps these raw tokens to utility classes through the <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">@theme inline</code> block at the top of <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">main.css</code>, so <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">--primary</code> becomes <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">bg-primary</code>, <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">text-primary</code>, <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">ring-primary</code>, and so on:</p>
+    <pre class="apex-code"><code>@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  /* ...one --color-* mapping per token */
+}</code></pre>
+
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Token Swatches</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">Because the tokens are live CSS variables, every swatch below reads its color straight from the current theme. Toggle dark mode in the header and watch them shift:</p>
+    <div class="my-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+      <div class="apex-card overflow-hidden">
+        <div class="h-16 w-full" style="background: var(--primary)"></div>
+        <div class="px-3 py-2"><p class="font-mono text-xs text-foreground">--primary</p></div>
+      </div>
+      <div class="apex-card overflow-hidden">
+        <div class="h-16 w-full" style="background: var(--accent)"></div>
+        <div class="px-3 py-2"><p class="font-mono text-xs text-foreground">--accent</p></div>
+      </div>
+      <div class="apex-card overflow-hidden">
+        <div class="h-16 w-full" style="background: var(--muted)"></div>
+        <div class="px-3 py-2"><p class="font-mono text-xs text-foreground">--muted</p></div>
+      </div>
+      <div class="apex-card overflow-hidden">
+        <div class="h-16 w-full" style="background: var(--success)"></div>
+        <div class="px-3 py-2"><p class="font-mono text-xs text-foreground">--success</p></div>
+      </div>
+      <div class="apex-card overflow-hidden">
+        <div class="h-16 w-full" style="background: var(--warning)"></div>
+        <div class="px-3 py-2"><p class="font-mono text-xs text-foreground">--warning</p></div>
+      </div>
+      <div class="apex-card overflow-hidden">
+        <div class="h-16 w-full" style="background: var(--destructive)"></div>
+        <div class="px-3 py-2"><p class="font-mono text-xs text-foreground">--destructive</p></div>
+      </div>
+    </div>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">The chart palette is exposed the same way through <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">--chart-1</code> through <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">--chart-5</code>, and ApexCharts reads these variables when it renders so charts re-theme with the rest of the UI:</p>
+    <div class="my-4 grid grid-cols-5 gap-3">
+      <div class="apex-card overflow-hidden">
+        <div class="h-12 w-full" style="background: var(--chart-1)"></div>
+        <div class="px-2 py-1.5"><p class="font-mono text-[10px] text-foreground">chart-1</p></div>
+      </div>
+      <div class="apex-card overflow-hidden">
+        <div class="h-12 w-full" style="background: var(--chart-2)"></div>
+        <div class="px-2 py-1.5"><p class="font-mono text-[10px] text-foreground">chart-2</p></div>
+      </div>
+      <div class="apex-card overflow-hidden">
+        <div class="h-12 w-full" style="background: var(--chart-3)"></div>
+        <div class="px-2 py-1.5"><p class="font-mono text-[10px] text-foreground">chart-3</p></div>
+      </div>
+      <div class="apex-card overflow-hidden">
+        <div class="h-12 w-full" style="background: var(--chart-4)"></div>
+        <div class="px-2 py-1.5"><p class="font-mono text-[10px] text-foreground">chart-4</p></div>
+      </div>
+      <div class="apex-card overflow-hidden">
+        <div class="h-12 w-full" style="background: var(--chart-5)"></div>
+        <div class="px-2 py-1.5"><p class="font-mono text-[10px] text-foreground">chart-5</p></div>
+      </div>
+    </div>
+
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Changing the Primary Color</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">To rebrand the dashboard, update the <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">--primary</code> token in <strong class="text-foreground">both</strong> the <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">:root</code> (light) and <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">.dark</code> blocks. Keep the matching <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">--ring</code> and <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">--sidebar-primary</code> in sync so focus rings and the active sidebar accent match. To switch the default teal (hue 160) to blue (hue 250), change only the hue value:</p>
+    <pre class="apex-code"><code>/* Light mode */
+:root {
+  --primary: oklch(0.55 0.175 250);          /* hue 160 -&gt; 250 (blue) */
+  --primary-foreground: oklch(0.985 0.002 230);
+  --ring: oklch(0.55 0.175 250);
+  --sidebar-primary: oklch(0.60 0.175 250);
+}
+
+/* Dark mode */
+.dark {
+  --primary: oklch(0.65 0.19 250);
+  --primary-foreground: oklch(0.075 0 0);
+  --ring: oklch(0.65 0.19 250);
+  --sidebar-primary: oklch(0.65 0.19 250);
+}</code></pre>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">The change propagates everywhere <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">bg-primary</code>, <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">text-primary</code>, or <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">ring-primary</code> is used &mdash; buttons (<code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">.apex-btn-primary</code>), links, active states, badges, and sidebar accents all update at once. No build-time config is involved; Tailwind v4 resolves the variables at runtime.</p>
+    <div class="my-4 rounded-lg border border-primary/30 bg-primary/5 p-4 text-sm text-foreground/80">Tip: keep <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">--primary</code> and <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">--chart-1</code> on the same hue. The default theme sets both to hue 160 so the first chart series matches the brand color.</div>
+
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Semantic Color Tokens</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">The design system uses semantic names rather than raw colors. Most tokens have a <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">*-foreground</code> counterpart for text that sits on top of them:</p>
+    <div class="my-4 overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-border bg-muted/50">
+            <th class="px-4 py-2 text-start font-medium">Token</th>
+            <th class="px-4 py-2 text-start font-medium">Purpose</th>
+          </tr>
+        </thead>
+        <tbody class="text-foreground/80">
+          <tr class="border-b border-border"><td class="px-4 py-2 font-mono text-xs">--primary</td><td class="px-4 py-2">Brand color, primary buttons, active states</td></tr>
+          <tr class="border-b border-border"><td class="px-4 py-2 font-mono text-xs">--secondary</td><td class="px-4 py-2">Secondary actions, subtle backgrounds</td></tr>
+          <tr class="border-b border-border"><td class="px-4 py-2 font-mono text-xs">--card</td><td class="px-4 py-2">Card and panel surfaces (<code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">.apex-card</code>)</td></tr>
+          <tr class="border-b border-border"><td class="px-4 py-2 font-mono text-xs">--muted</td><td class="px-4 py-2">Muted backgrounds, code blocks, inline <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">code</code></td></tr>
+          <tr class="border-b border-border"><td class="px-4 py-2 font-mono text-xs">--accent</td><td class="px-4 py-2">Hover states, highlights</td></tr>
+          <tr class="border-b border-border"><td class="px-4 py-2 font-mono text-xs">--border</td><td class="px-4 py-2">Default border color (applied to <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">*</code> in the base layer)</td></tr>
+          <tr class="border-b border-border"><td class="px-4 py-2 font-mono text-xs">--ring</td><td class="px-4 py-2">Focus-visible rings on inputs and buttons</td></tr>
+          <tr class="border-b border-border"><td class="px-4 py-2 font-mono text-xs">--destructive</td><td class="px-4 py-2">Error states, delete actions</td></tr>
+          <tr class="border-b border-border"><td class="px-4 py-2 font-mono text-xs">--success</td><td class="px-4 py-2">Success indicators, positive trends</td></tr>
+          <tr class="border-b border-border"><td class="px-4 py-2 font-mono text-xs">--warning</td><td class="px-4 py-2">Warning badges, caution states</td></tr>
+          <tr class="border-b border-border"><td class="px-4 py-2 font-mono text-xs">--chart-1 &hellip; --chart-5</td><td class="px-4 py-2">Chart color palette (5 series colors)</td></tr>
+          <tr class="border-b border-border"><td class="px-4 py-2 font-mono text-xs">--sidebar-*</td><td class="px-4 py-2">Sidebar surface, foreground, accent, border, ring, and primary (the sidebar stays dark in light mode)</td></tr>
+          <tr><td class="px-4 py-2 font-mono text-xs">--radius</td><td class="px-4 py-2">Base corner radius; drives <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">--radius-sm</code>&hellip;<code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">--radius-2xl</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Dark Mode</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">Dark mode is implemented by toggling a <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">.dark</code> class on the <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;html&gt;</code> element. The Tailwind dark variant is configured once in <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">main.css</code>:</p>
+    <pre class="apex-code"><code>@custom-variant dark (&amp;:is(.dark *));</code></pre>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">This lets you write <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">dark:bg-card</code> style utilities in your markup, while the <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">.dark</code> block in <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">main.css</code> overrides every semantic token at once. There is no <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">ThemeProvider</code> and no React &mdash; runtime theme state is handled by a small module, <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">src/lib/theme.js</code>, which persists the choice to <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">localStorage</code> under the key <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">apex-theme</code>:</p>
+    <pre class="apex-code"><code>import { setTheme, toggleTheme, getResolvedTheme } from "./lib/theme.js";
+
+setTheme("dark");    // "light" | "dark" | "system"
+toggleTheme();       // flips between light and dark
+getResolvedTheme();  // "light" or "dark" (resolves "system")</code></pre>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">The theme toggle in the header (a sun/moon button) simply calls <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">toggleTheme()</code>. The <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">"system"</code> value follows the operating-system preference via <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">matchMedia("(prefers-color-scheme: dark)")</code> and reacts to OS changes in real time. When the theme changes, <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">theme.js</code> dispatches an <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">apex:themechange</code> event so charts can re-read the OKLCh chart tokens and repaint.</p>
+
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Preventing the Theme Flash (FOUC)</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">Module scripts load after the page paints, so applying the theme only from <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">theme.js</code> would cause a flash of the wrong theme on first load. To avoid this, every page includes a tiny inline script in the <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;head&gt;</code> that runs <em>before</em> the body renders. It reads the saved preference and applies <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">.dark</code> + <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">color-scheme</code> synchronously:</p>
+    <pre class="apex-code"><code>&lt;script&gt;
+  (function () {
+    try {
+      var t = localStorage.getItem("apex-theme") || "system";
+      var dark = t === "dark" || (t === "system" &amp;&amp;
+        matchMedia("(prefers-color-scheme: dark)").matches);
+      var el = document.documentElement;
+      el.classList.toggle("dark", dark);
+      el.style.colorScheme = dark ? "dark" : "light";
+              var _ce=document.documentElement;var _ca=localStorage.getItem("apex-accent");if(_ca)_ce.dataset.accent=_ca;var _cr=localStorage.getItem("apex-radius");if(_cr)_ce.style.setProperty("--radius",_cr);var _cd=localStorage.getItem("apex-dir");if(_cd)_ce.dir=_cd;
+        } catch (e) {}
+  })();
+&lt;/script&gt;</code></pre>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">Copy this block into the <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;head&gt;</code> of every new page. The dashboard pages extend it slightly to also restore the collapsed-sidebar state from <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">apex-sidebar-collapsed</code>. The runtime module, <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">initTheme()</code>, then takes over once the page has hydrated to handle toggles and live OS changes.</p>
+
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">RTL Support</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">The layout is built with CSS logical properties, so it works in right-to-left languages (Arabic, Hebrew, Persian, Urdu) when you set <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">dir="rtl"</code> on the <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;html&gt;</code> element. The sidebar slides in from the correct edge, borders and spacing flip automatically, and the content offset follows. The implementation relies on:</p>
+    <ul class="mb-4 ml-5 list-disc space-y-1.5 text-sm text-foreground/80">
+      <li><strong class="text-foreground">CSS logical properties</strong> &mdash; instead of physical <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">ml-*</code>/<code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">mr-*</code> and <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">pl-*</code>/<code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">pr-*</code>, the markup uses <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">ms-*</code>/<code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">me-*</code>, <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">ps-*</code>/<code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">pe-*</code>, <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">text-start</code>/<code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">text-end</code>, and <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">border-s</code>/<code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">border-e</code>. These flip with the document direction.</li>
+      <li><strong class="text-foreground">CSS that keys off <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">[dir="rtl"]</code></strong> &mdash; the sidebar uses <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">inset-inline-start</code> and a <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">[dir="rtl"] .apex-sidebar-aside</code> rule so the off-canvas drawer translates from the right edge, and the content margin uses <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">margin-inline-start</code>.</li>
+      <li><strong class="text-foreground">The <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">dir</code> attribute on <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;html&gt;</code></strong> &mdash; browsers natively reverse text flow, scroll direction, and table column order when this is set.</li>
+    </ul>
+    <pre class="apex-code"><code>&lt;!-- Classes that work in both LTR and RTL --&gt;
+&lt;div class="ms-4 me-2 ps-3 pe-3 text-start border-s"&gt;
+  Content flows correctly in both directions
+&lt;/div&gt;
+
+&lt;!-- Enable RTL for the whole page --&gt;
+&lt;html lang="ar" dir="rtl"&gt;</code></pre>
+
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Next Steps</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">See <a href="/docs-components.html" class="font-medium text-primary hover:underline">Components</a> for the reusable <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">.apex-*</code> primitives, or learn how to <a href="/docs-adding-pages.html" class="font-medium text-primary hover:underline">add new pages</a> to the dashboard.</p>
+
+  </article></main>
+</div>
+</body>
+<!-- Mirrored from demo.dashboardpack.com/apex-html/docs-theming.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 20 Jul 2026 06:51:25 GMT -->
+</html>
+

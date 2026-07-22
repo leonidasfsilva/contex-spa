@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  
+<!-- Mirrored from demo.dashboardpack.com/apex-html/order-detail.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 20 Jul 2026 06:51:03 GMT -->
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order ORD-7891 Â· Apex</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("apex-theme") || "system";
+          var dark = t === "dark" || (t === "system" &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var el = document.documentElement;
+          el.classList.toggle("dark", dark);
+          el.style.colorScheme = dark ? "dark" : "light";
+          if (localStorage.getItem("apex-sidebar-collapsed") === "true")
+            el.dataset.sidebarCollapsed = "true";
+                  var _ce=document.documentElement;var _ca=localStorage.getItem("apex-accent");if(_ca)_ce.dataset.accent=_ca;var _cr=localStorage.getItem("apex-radius");if(_cr)_ce.style.setProperty("--radius",_cr);var _cd=localStorage.getItem("apex-dir");if(_cd)_ce.dir=_cd;
+        } catch (e) {}
+      })();
+    </script>
+    <script type="module" crossorigin src="/assets/icons-CvCjpvea.js"></script>
+    <script type="module" crossorigin src="/assets/toast-CYCf26qJ.js"></script>
+    <script type="module" crossorigin src="/assets/tabs-CD3ADGpv.js"></script>
+    <script type="module" crossorigin src="/assets/main-CaHxEhGx.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/icons-eA5UIe3R.css">
+    <script type="module" src="/components/sidebar.js"></script>
+  </head>
+  <body>
+    <div class="flex min-h-screen bg-background">
+      <contex-sidebar active="orders.html"></contex-sidebar>
+      <div class="apex-content flex min-h-screen flex-1 flex-col">
+        <apex-header></apex-header>
+        <main id="main-content" class="flex-1 p-4 sm:p-6">
+          <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div class="space-y-1">
+              <nav class="flex items-center gap-1.5 text-sm text-muted-foreground" aria-label="Breadcrumb">
+                <a href="/index-2.html" class="transition-colors hover:text-foreground">Dashboard</a>
+                <i data-lucide="chevron-right" class="size-3.5"></i>
+                <a href="/orders.html" class="transition-colors hover:text-foreground">Orders</a>
+                <i data-lucide="chevron-right" class="size-3.5"></i>
+                <span class="font-medium text-foreground">ORD-7891</span>
+              </nav>
+              <h1 class="text-2xl font-bold tracking-tight">Order ORD-7891</h1>
+              <p class="text-sm text-muted-foreground">Placed on Feb 14, 2026</p>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <a href="/order-edit.html" class="apex-btn apex-btn-outline"><i data-lucide="pencil" class="h-4 w-4"></i> Edit</a>
+              <button type="button" data-dialog-open="delete-order" class="apex-btn apex-btn-destructive"><i data-lucide="trash-2" class="h-4 w-4"></i> Delete</button>
+            </div>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <!-- Order Details -->
+            <div class="apex-card">
+              <div class="flex flex-col space-y-1.5 p-6">
+                <h3 class="flex items-center gap-2 text-base font-semibold"><i data-lucide="package" class="h-4 w-4 text-muted-foreground"></i> Order Details</h3>
+                <p class="text-sm text-muted-foreground">Core order information</p>
+              </div>
+              <div class="space-y-4 p-6 pt-0">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-muted-foreground">Order ID</span>
+                  <span class="font-mono text-sm font-medium">ORD-7891</span>
+                </div>
+                <div class="apex-separator"></div>
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-muted-foreground">Status</span>
+                  <span class="inline-flex items-center rounded-md bg-success/15 px-2 py-0.5 text-[11px] font-medium capitalize text-success">completed</span>
+                </div>
+                <div class="apex-separator"></div>
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-muted-foreground">Date</span>
+                  <span class="text-sm font-medium">Feb 14, 2026</span>
+                </div>
+                <div class="apex-separator"></div>
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-muted-foreground">Amount</span>
+                  <span class="text-sm font-semibold">$299.00</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Customer -->
+            <div class="apex-card">
+              <div class="flex flex-col space-y-1.5 p-6">
+                <h3 class="flex items-center gap-2 text-base font-semibold"><i data-lucide="users" class="h-4 w-4 text-muted-foreground"></i> Customer</h3>
+                <p class="text-sm text-muted-foreground">Customer information</p>
+              </div>
+              <div class="space-y-4 p-6 pt-0">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">EW</div>
+                  <div>
+                    <p class="text-sm font-medium">Emma Wilson</p>
+                    <p class="text-xs text-muted-foreground">emma@example.com</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Product -->
+            <div class="apex-card">
+              <div class="flex flex-col space-y-1.5 p-6">
+                <h3 class="flex items-center gap-2 text-base font-semibold"><i data-lucide="shopping-bag" class="h-4 w-4 text-muted-foreground"></i> Product</h3>
+                <p class="text-sm text-muted-foreground">Purchased product details</p>
+              </div>
+              <div class="space-y-4 p-6 pt-0">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-muted-foreground">Name</span>
+                  <span class="text-sm font-medium">Pro Dashboard License</span>
+                </div>
+                <div class="apex-separator"></div>
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-muted-foreground">Price</span>
+                  <span class="text-sm font-semibold">$299.00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <dialog id="delete-order" class="apex-dialog">
+      <div class="p-6">
+        <h2 class="text-lg font-semibold">Delete Order</h2>
+        <p class="mt-1.5 text-sm text-muted-foreground">Are you sure you want to delete order ORD-7891? This action cannot be undone.</p>
+        <div class="mt-6 flex justify-end gap-3">
+          <button type="button" data-dialog-close class="apex-btn apex-btn-outline">Cancel</button>
+          <a href="/orders.html" class="apex-btn apex-btn-destructive">Delete</a>
+        </div>
+      </div>
+    </dialog>
+
+  </body>
+
+<!-- Mirrored from demo.dashboardpack.com/apex-html/order-detail.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 20 Jul 2026 06:51:03 GMT -->
+</html>
+

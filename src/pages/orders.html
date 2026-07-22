@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mobile Orders - Apex</title>
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('apex-theme') || 'system';
+                var dark = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.classList.toggle('dark', dark);
+                document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+                if (localStorage.getItem('apex-sidebar-collapsed') === 'true') document.documentElement.dataset.sidebarCollapsed = 'true';
+            } catch (e) { }
+        })();
+    </script>
+    <script type="module" crossorigin src="/assets/icons-CvCjpvea.js"></script>
+    <script type="module" crossorigin src="/assets/toast-CYCf26qJ.js"></script>
+    <script type="module" crossorigin src="/assets/tabs-CD3ADGpv.js"></script>
+    <script type="module" crossorigin src="/assets/main-CaHxEhGx.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/icons-eA5UIe3R.css" />
+    <style>
+        .mobile-order-list {
+            display: grid;
+            gap: 0.65rem;
+            max-width: 42rem;
+        }
+
+        .mobile-order-item {
+            display: block;
+            position: relative;
+            border: 1px solid var(--border);
+            border-radius: 0.85rem;
+            background: var(--card);
+            color: var(--card-foreground);
+            padding: 0.85rem 0.9rem;
+            box-shadow: 0 1px 2px oklch(0% 0 0 / 0.2);
+            transition: border-color 150ms ease, background-color 150ms ease, transform 150ms ease;
+        }
+
+        .mobile-order-item:hover {
+            border-color: var(--primary);
+            background: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .mobile-order-item:focus-visible {
+            outline: 2px solid var(--ring);
+            outline-offset: 2px;
+        }
+
+        .mobile-order-meta {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .mobile-order-customer {
+            display: flex;
+            min-width: 0;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .mobile-order-customer p {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .mobile-order-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-top: 0.7rem;
+            padding: 0.65rem 1.35rem 0 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .mobile-order-summary strong {
+            color: var(--foreground);
+            margin-left: auto;
+        }
+
+        .mobile-order-chevron {
+            position: absolute;
+            right: 0.55rem;
+            bottom: 0.7rem;
+            width: 1rem;
+            height: 1rem;
+            color: var(--muted-foreground);
+        }
+
+        .mobile-order-item::after {
+            display: none;
+        }
+
+        .mobile-order-search {
+            padding-inline-start: 2.5rem !important;
+        }
+
+        .mobile-order-item::after {
+            content: '›';
+            float: right;
+            margin-top: -1.15rem;
+            color: var(--muted-foreground);
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .mobile-order-filter-tabs {
+            min-width: 0;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .mobile-order-filter-tabs button {
+            min-width: 0;
+            white-space: nowrap;
+        }
+
+        .desktop-orders-only {
+            display: none;
+        }
+
+        @media (max-width: 767px) {
+
+            html,
+            body {
+                max-width: 100%;
+                overflow-x: hidden;
+            }
+
+            .apex-content,
+            #main-content {
+                min-width: 0;
+                max-width: 100%;
+                overflow-x: hidden;
+            }
+
+            .mobile-order-filters {
+                min-width: 0;
+                max-width: 100%;
+                overflow: hidden;
+            }
+
+            .mobile-order-filter-tabs {
+                width: 100%;
+            }
+
+            .mobile-order-filter-tabs button {
+                flex: 1 1 0;
+                justify-content: center;
+                padding-inline: 0.5rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .mobile-order-filters {
+                display: none;
+            }
+
+            .mobile-orders-only {
+                display: none;
+            }
+
+            .desktop-orders-only {
+                display: block;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .mobile-order-filter-tabs button {
+                padding-inline: 0.3rem;
+            }
+        }
+    </style>
+    <script type="module" src="/components/sidebar.js"></script>
+</head>
+
+<body>
+    <div class="flex min-h-screen bg-background">
+        <contex-sidebar active="mobile-orders.html"></contex-sidebar>
+        <div class="apex-content flex min-h-screen flex-1 flex-col">
+            <apex-header></apex-header>
+            <main id="main-content" class="flex-1 p-4 sm:p-6">
+                <div class="mb-6 space-y-1">
+                    <nav class="flex items-center gap-1.5 text-sm text-muted-foreground" aria-label="Breadcrumb">
+                        <a href="/index.html" class="transition-colors hover:text-foreground">Dashboard</a>
+                        <i data-lucide="chevron-right" class="size-3.5"></i>
+                        <span class="font-medium text-foreground">Mobile list</span>
+                    </nav>
+                    <h1 class="text-2xl font-bold tracking-tight">Mobile Orders</h1>
+                    <p class="text-sm text-muted-foreground">A compact list designed for quick scanning on small
+                        screens.</p>
+                </div>
+
+                <section
+                    class="mobile-order-filters mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
+                    aria-label="Mobile order filters">
+                    <label class="relative block w-full lg:max-w-sm">
+                        <i data-lucide="search"
+                            class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"></i>
+                        <input class="mobile-order-search apex-input w-full" type="search"
+                            placeholder="Search orders..." />
+                    </label>
+                    <div class="mobile-order-filter-tabs flex items-center gap-1 rounded-lg bg-muted p-0.5"
+                        role="tablist" aria-label="Order status">
+                        <button
+                            class="rounded-md px-3 py-1.5 text-xs font-medium transition-all bg-background text-foreground shadow-sm"
+                            type="button" data-mobile-status="all" aria-selected="true">All</button>
+                        <button
+                            class="rounded-md px-3 py-1.5 text-xs font-medium transition-all text-muted-foreground hover:text-foreground"
+                            type="button" data-mobile-status="completed" aria-selected="false">Completed</button>
+                        <button
+                            class="rounded-md px-3 py-1.5 text-xs font-medium transition-all text-muted-foreground hover:text-foreground"
+                            type="button" data-mobile-status="processing" aria-selected="false">Processing</button>
+                        <button
+                            class="rounded-md px-3 py-1.5 text-xs font-medium transition-all text-muted-foreground hover:text-foreground"
+                            type="button" data-mobile-status="pending" aria-selected="false">Pending</button>
+                        <button
+                            class="rounded-md px-3 py-1.5 text-xs font-medium transition-all text-muted-foreground hover:text-foreground"
+                            type="button" data-mobile-status="cancelled" aria-selected="false">Cancelled</button>
+                    </div>
+                </section>
+
+                <section class="mobile-order-list mobile-orders-only" aria-label="Mobile orders">
+                    <a class="mobile-order-item" data-mobile-order-status="completed" href="/order-detail.html">
+                        <div class="mobile-order-meta">
+                            <div class="mobile-order-customer">
+                                <span
+                                    class="flex size-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-xs font-semibold text-emerald-400">EW</span>
+                                <div class="min-w-0">
+                                    <p class="font-semibold text-foreground">Emma Wilson</p>
+                                    <p class="text-xs text-muted-foreground">ORD-7891</p>
+                                </div>
+                            </div>
+                            <span class="apex-badge apex-badge-success shrink-0">Completed</span>
+                        </div>
+                        <div class="mobile-order-summary"><span class="truncate text-sm text-muted-foreground">Pro
+                                Dashboard License</span><strong
+                                class="shrink-0 text-sm text-foreground">$299.00</strong><i data-lucide="chevron-right"
+                                class="mobile-order-chevron" aria-hidden="true"></i></div>
+                    </a>
+                    <a class="mobile-order-item" data-mobile-order-status="processing" href="/order-detail.html">
+                        <div class="mobile-order-meta">
+                            <div class="mobile-order-customer"><span
+                                    class="flex size-9 shrink-0 items-center justify-center rounded-full bg-sky-500/15 text-xs font-semibold text-sky-400">JC</span>
+                                <div class="min-w-0">
+                                    <p class="font-semibold text-foreground">James Chen</p>
+                                    <p class="text-xs text-muted-foreground">ORD-7890</p>
+                                </div>
+                            </div><span class="apex-badge shrink-0">Processing</span>
+                        </div>
+                        <div class="mobile-order-summary"><span class="truncate text-sm text-muted-foreground">Team Plan
+                                Upgrade</span><strong class="shrink-0 text-sm text-foreground">$599.00</strong><i
+                                data-lucide="chevron-right" class="mobile-order-chevron" aria-hidden="true"></i></div>
+                    </a>
+                    <a class="mobile-order-item" data-mobile-order-status="completed" href="/order-detail.html">
+                        <div class="mobile-order-meta">
+                            <div class="mobile-order-customer"><span
+                                    class="flex size-9 shrink-0 items-center justify-center rounded-full bg-violet-500/15 text-xs font-semibold text-violet-400">SG</span>
+                                <div class="min-w-0">
+                                    <p class="font-semibold text-foreground">Sofia Garcia</p>
+                                    <p class="text-xs text-muted-foreground">ORD-7889</p>
+                                </div>
+                            </div><span class="apex-badge apex-badge-success shrink-0">Completed</span>
+                        </div>
+                        <div class="mobile-order-summary"><span
+                                class="truncate text-sm text-muted-foreground">Enterprise
+                                License</span><strong class="shrink-0 text-sm text-foreground">$1,499.00</strong><i
+                                data-lucide="chevron-right" class="mobile-order-chevron" aria-hidden="true"></i></div>
+                    </a>
+                    <a class="mobile-order-item" data-mobile-order-status="pending" href="/order-detail.html">
+                        <div class="mobile-order-meta">
+                            <div class="mobile-order-customer"><span
+                                    class="flex size-9 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-xs font-semibold text-amber-400">AT</span>
+                                <div class="min-w-0">
+                                    <p class="font-semibold text-foreground">Alex Thompson</p>
+                                    <p class="text-xs text-muted-foreground">ORD-7888</p>
+                                </div>
+                            </div><span class="apex-badge apex-badge-warning shrink-0">Pending</span>
+                        </div>
+                        <div class="mobile-order-summary"><span class="truncate text-sm text-muted-foreground">Single
+                                License</span><strong class="shrink-0 text-sm text-foreground">$79.00</strong><i
+                                data-lucide="chevron-right" class="mobile-order-chevron" aria-hidden="true"></i></div>
+                    </a>
+                    <a class="mobile-order-item" data-mobile-order-status="completed" href="/order-detail.html">
+                        <div class="mobile-order-meta">
+                            <div class="mobile-order-customer"><span
+                                    class="flex size-9 shrink-0 items-center justify-center rounded-full bg-rose-500/15 text-xs font-semibold text-rose-400">MS</span>
+                                <div class="min-w-0">
+                                    <p class="font-semibold text-foreground">Maria Santos</p>
+                                    <p class="text-xs text-muted-foreground">ORD-7887</p>
+                                </div>
+                            </div><span class="apex-badge apex-badge-success shrink-0">Completed</span>
+                        </div>
+                        <div class="mobile-order-summary"><span class="truncate text-sm text-muted-foreground">Pro
+                                Dashboard License</span><strong
+                                class="shrink-0 text-sm text-foreground">$299.00</strong><i data-lucide="chevron-right"
+                                class="mobile-order-chevron" aria-hidden="true"></i></div>
+                    </a>
+                    <div class="mobile-order-empty px-4 py-12 text-center text-sm text-muted-foreground" hidden>No
+                        orders found.</div>
+                </section>
+
+                <section class="desktop-orders-only" aria-label="Desktop orders">
+                    <apex-data-table data-selectable="true" data-row-href="/order-detail.html" data-export="orders"
+                        data-search="Search orders..." data-page-size="10">
+                        <script type="application/json">
+              {
+                "idKey": "id",
+                "emptyMessage": "No orders found.",
+                "filter": { "key": "status", "tabs": [
+                  { "label": "All", "value": "all" },
+                  { "label": "Completed", "value": "completed" },
+                  { "label": "Processing", "value": "processing" },
+                  { "label": "Pending", "value": "pending" },
+                  { "label": "Cancelled", "value": "cancelled" }
+                ]},
+                "columns": [
+                  { "key": "id", "label": "Order", "type": "mono", "sortable": true, "search": true },
+                  { "key": "customerName", "label": "Customer", "type": "entity", "titleKey": "customerName", "subKey": "customerEmail", "initialsKey": "customerInitials", "sortable": true, "search": true },
+                  { "key": "productName", "label": "Product", "type": "text", "sortable": true, "search": true },
+                  { "key": "status", "label": "Status", "type": "badge", "sortable": true, "map": { "completed": "success", "processing": "default", "pending": "warning" } },
+                  { "key": "date", "label": "Date", "type": "date", "sortable": true },
+                  { "key": "amount", "label": "Amount", "type": "currency", "sortable": true, "align": "end" },
+                  { "type": "actions", "style": "dropdown", "align": "end", "className": "w-10", "actions": [
+                    { "label": "View", "icon": "eye", "href": "order-detail.html" },
+                    { "label": "Edit", "icon": "pencil", "href": "order-edit.html" }
+                  ]}
+                ],
+                "rows": [
+                  { "id": "ORD-7891", "customerName": "Emma Wilson", "customerEmail": "emma@example.com", "customerInitials": "EW", "productName": "Pro Dashboard License", "amount": 299, "status": "completed", "date": "Feb 14, 2026" },
+                  { "id": "ORD-7890", "customerName": "James Chen", "customerEmail": "james@company.io", "customerInitials": "JC", "productName": "Team Plan Upgrade", "amount": 599, "status": "processing", "date": "Feb 14, 2026" },
+                  { "id": "ORD-7889", "customerName": "Sofia Garcia", "customerEmail": "sofia@startup.co", "customerInitials": "SG", "productName": "Enterprise License", "amount": 1499, "status": "completed", "date": "Feb 13, 2026" },
+                  { "id": "ORD-7888", "customerName": "Alex Thompson", "customerEmail": "alex@dev.com", "customerInitials": "AT", "productName": "Single License", "amount": 79, "status": "pending", "date": "Feb 13, 2026" },
+                  { "id": "ORD-7887", "customerName": "Maria Santos", "customerEmail": "maria@agency.co", "customerInitials": "MS", "productName": "Pro Dashboard License", "amount": 299, "status": "completed", "date": "Feb 12, 2026" }
+                ]
+              }
+              </script>
+                    </apex-data-table>
+                </section>
+            </main>
+        </div>
+    </div>
+    <script>
+        (() => {
+            const search = document.querySelector('.mobile-order-search');
+            const tabs = [...document.querySelectorAll('[data-mobile-status]')];
+            const orders = [...document.querySelectorAll('[data-mobile-order-status]')];
+            let activeStatus = 'all';
+
+            function renderOrders() {
+                const query = (search?.value || '').trim().toLowerCase();
+
+                let visibleOrders = 0;
+                orders.forEach((order) => {
+                    const matchesStatus = activeStatus === 'all' || order.dataset.mobileOrderStatus === activeStatus;
+                    const matchesSearch = !query || order.textContent.toLowerCase().includes(query);
+                    const visible = matchesStatus && matchesSearch;
+                    order.hidden = !visible;
+                    if (visible) visibleOrders += 1;
+                });
+                const empty = document.querySelector('.mobile-order-empty');
+                if (empty) empty.hidden = visibleOrders !== 0;
+            }
+
+            tabs.forEach((tab) => {
+                tab.addEventListener('click', () => {
+                    activeStatus = tab.dataset.mobileStatus;
+                    const baseClasses = ['rounded-md', 'px-3', 'py-1.5', 'text-xs', 'font-medium', 'transition-all'];
+                    const activeClasses = ['bg-background', 'text-foreground', 'shadow-sm'];
+                    const inactiveClasses = ['text-muted-foreground', 'hover:text-foreground'];
+                    tabs.forEach((item) => {
+                        const selected = item === tab;
+                        item.setAttribute('aria-selected', String(selected));
+                        item.className = [...baseClasses, ...(selected ? activeClasses : inactiveClasses)].join(' ');
+                    });
+                    renderOrders();
+                });
+            });
+
+            search?.addEventListener('input', renderOrders);
+        })();
+    </script>
+</body>
+
+</html>
