@@ -1,0 +1,89 @@
+<!doctype html><html lang="en">
+<!-- Mirrored from demo.dashboardpack.com/apex-html/docs-getting-started.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 20 Jul 2026 06:51:08 GMT -->
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Installation Â· Apex Docs</title>
+<script>(function(){try{var t=localStorage.getItem("apex-theme")||"system";var d=t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d);document.documentElement.style.colorScheme=d?"dark":"light";var _ce=document.documentElement;var _ca=localStorage.getItem("apex-accent");if(_ca)_ce.dataset.accent=_ca;var _cr=localStorage.getItem("apex-radius");if(_cr)_ce.style.setProperty("--radius",_cr);var _cd=localStorage.getItem("apex-dir");if(_cd)_ce.dir=_cd;}catch(e){}})();</script>
+  <script type="module" crossorigin src="/assets/icons-CvCjpvea.js"></script>
+  <script type="module" crossorigin src="/assets/tabs-CD3ADGpv.js"></script>
+  <script type="module" crossorigin src="/assets/docs-Xj0E4rHW.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/icons-eA5UIe3R.css">
+</head><body>
+<apex-docs-header></apex-docs-header>
+<div class="mx-auto flex max-w-7xl">
+  <div class="apex-docs-overlay" data-docs-close></div>
+  <aside class="apex-docs-aside shrink-0 border-e border-border"><apex-docs-sidebar active="docs-getting-started.html"></apex-docs-sidebar></aside>
+  <main class="min-w-0 flex-1 px-4 py-8 sm:px-6 lg:px-12"><article class="mx-auto max-w-3xl">
+
+<h1 class="text-3xl font-bold tracking-tight">Installation</h1>
+<p class="mt-3 text-base text-muted-foreground">Step-by-step guide to getting Apex Dashboard &mdash; HTML running on your local machine.</p>
+
+<h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Prerequisites</h2>
+<p class="mb-4 text-sm leading-7 text-foreground/80">Before you begin, make sure you have the following installed:</p>
+<ul class="mb-4 ml-5 list-disc space-y-1.5 text-sm text-foreground/80">
+  <li><strong class="text-foreground">Node.js 18+</strong> &mdash; <a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer" class="font-medium text-primary hover:underline">Download Node.js</a>. Vite requires a current LTS version.</li>
+  <li><strong class="text-foreground">npm</strong>, <strong class="text-foreground">yarn</strong>, or <strong class="text-foreground">pnpm</strong> &mdash; npm ships with Node.js; yarn and pnpm are optional alternatives</li>
+  <li><strong class="text-foreground">Git</strong> &mdash; optional, for cloning the repository (you can also download the ZIP)</li>
+</ul>
+
+<h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Step 1: Get the Files</h2>
+<p class="mb-4 text-sm leading-7 text-foreground/80">Clone the repository, or download and unzip the template, then move into the project folder:</p>
+<pre class="apex-code"><code>git clone https://github.com/colorlib/apex-dashboard-html.git
+cd apex-dashboard-html</code></pre>
+
+<h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Step 2: Install Dependencies</h2>
+<p class="mb-4 text-sm leading-7 text-foreground/80">Use your preferred package manager. This installs Vite, Tailwind CSS v4, ApexCharts, Lucide, and SortableJS.</p>
+<h3 class="mt-6 mb-2 text-base font-semibold">npm</h3>
+<pre class="apex-code"><code>npm install</code></pre>
+<h3 class="mt-6 mb-2 text-base font-semibold">yarn</h3>
+<pre class="apex-code"><code>yarn</code></pre>
+<h3 class="mt-6 mb-2 text-base font-semibold">pnpm</h3>
+<pre class="apex-code"><code>pnpm install</code></pre>
+
+<h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Step 3: Run the Dev Server</h2>
+<pre class="apex-code"><code>npm run dev</code></pre>
+<p class="mb-4 text-sm leading-7 text-foreground/80">The Vite development server starts at <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">http://localhost:3838</code>. It serves every root-level <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">*.html</code> page and hot-reloads your changes &mdash; edits to HTML, CSS, or component JavaScript appear instantly without a full reload.</p>
+
+<h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Step 4: Build for Production</h2>
+<p class="mb-4 text-sm leading-7 text-foreground/80">When you are ready to deploy, create an optimized static build:</p>
+<pre class="apex-code"><code>npm run build
+npm run preview</code></pre>
+<p class="mb-4 text-sm leading-7 text-foreground/80"><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">npm run build</code> compiles every registered page, minifies the CSS and JavaScript, and writes plain static files to the <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">dist/</code> directory. <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">npm run preview</code> serves that build locally at <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">http://localhost:4838</code> so you can verify it before shipping.</p>
+<div class="my-4 rounded-lg border border-primary/30 bg-primary/5 p-4 text-sm text-foreground/80">The contents of <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">dist/</code> are plain HTML, CSS, and JavaScript with no server runtime. Upload them to any static host (Netlify, Vercel, Cloudflare Pages, S3, GitHub Pages) or drop the assets into an existing backend.</div>
+
+<h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Available Scripts</h2>
+<div class="my-4 overflow-x-auto">
+  <table class="w-full text-sm">
+    <thead><tr class="border-b border-border">
+      <th class="px-3 py-2 text-start font-medium">Command</th>
+      <th class="px-3 py-2 text-start font-medium">Description</th>
+    </tr></thead>
+    <tbody>
+      <tr class="border-b border-border/50"><td class="px-3 py-2"><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">npm run dev</code></td><td class="px-3 py-2 text-foreground/80">Start the Vite dev server with HMR on port 3838</td></tr>
+      <tr class="border-b border-border/50"><td class="px-3 py-2"><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">npm run build</code></td><td class="px-3 py-2 text-foreground/80">Create an optimized static production build in <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">dist/</code></td></tr>
+      <tr class="border-b border-border/50"><td class="px-3 py-2"><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">npm run preview</code></td><td class="px-3 py-2 text-foreground/80">Serve the production build locally on port 4838</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Using It With a Backend</h2>
+<p class="mb-4 text-sm leading-7 text-foreground/80">The compiled CSS and JavaScript are a drop-in anywhere, and the markup ports cleanly because the <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-*&gt;</code> custom-element tags survive copy-paste into any template engine. For Laravel specifically, the bundled <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">blade-starter-kit/</code> wires the components through Laravel&rsquo;s built-in Vite pipeline. The same approach works for Django templates, Rails ERB, Twig, and others &mdash; build with Vite (or include the built assets) and use the tags in your views.</p>
+
+<h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Next Steps</h2>
+<p class="mb-4 text-sm leading-7 text-foreground/80">Now that the project is running, explore the <a href="/docs-folder-structure.html" class="font-medium text-primary hover:underline">Folder Structure</a> to understand how the codebase is organized.</p>
+
+<div class="mt-12 flex items-center justify-between gap-3 border-t border-border pt-6">
+  <a href="/docs.html" class="apex-btn apex-btn-outline">
+    <i data-lucide="arrow-left" class="h-4 w-4"></i> Introduction
+  </a>
+  <a href="/docs-folder-structure.html" class="apex-btn apex-btn-primary">Folder Structure
+    <i data-lucide="arrow-right" class="h-4 w-4"></i>
+  </a>
+</div>
+
+</article></main>
+</div>
+</body>
+<!-- Mirrored from demo.dashboardpack.com/apex-html/docs-getting-started.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 20 Jul 2026 06:51:08 GMT -->
+</html>
+

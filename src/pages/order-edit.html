@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  
+<!-- Mirrored from demo.dashboardpack.com/apex-html/order-edit.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 20 Jul 2026 06:51:08 GMT -->
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Order ORD-7891 Â· Apex</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("apex-theme") || "system";
+          var dark = t === "dark" || (t === "system" &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var el = document.documentElement;
+          el.classList.toggle("dark", dark);
+          el.style.colorScheme = dark ? "dark" : "light";
+          if (localStorage.getItem("apex-sidebar-collapsed") === "true")
+            el.dataset.sidebarCollapsed = "true";
+                  var _ce=document.documentElement;var _ca=localStorage.getItem("apex-accent");if(_ca)_ce.dataset.accent=_ca;var _cr=localStorage.getItem("apex-radius");if(_cr)_ce.style.setProperty("--radius",_cr);var _cd=localStorage.getItem("apex-dir");if(_cd)_ce.dir=_cd;
+        } catch (e) {}
+      })();
+    </script>
+    <script type="module" crossorigin src="/assets/icons-CvCjpvea.js"></script>
+    <script type="module" crossorigin src="/assets/toast-CYCf26qJ.js"></script>
+    <script type="module" crossorigin src="/assets/tabs-CD3ADGpv.js"></script>
+    <script type="module" crossorigin src="/assets/main-CaHxEhGx.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/icons-eA5UIe3R.css">
+    <script type="module" src="/components/sidebar.js"></script>
+  </head>
+  <body>
+    <div class="flex min-h-screen bg-background">
+      <contex-sidebar active="orders.html"></contex-sidebar>
+      <div class="apex-content flex min-h-screen flex-1 flex-col">
+        <apex-header></apex-header>
+        <main id="main-content" class="flex-1 p-4 sm:p-6">
+          <div class="mb-6 space-y-1">
+            <nav class="flex items-center gap-1.5 text-sm text-muted-foreground" aria-label="Breadcrumb">
+              <a href="/index-2.html" class="transition-colors hover:text-foreground">Dashboard</a>
+              <i data-lucide="chevron-right" class="size-3.5"></i>
+              <a href="/orders.html" class="transition-colors hover:text-foreground">Orders</a>
+              <i data-lucide="chevron-right" class="size-3.5"></i>
+              <a href="/order-detail.html" class="transition-colors hover:text-foreground">ORD-7891</a>
+              <i data-lucide="chevron-right" class="size-3.5"></i>
+              <span class="font-medium text-foreground">Edit</span>
+            </nav>
+            <h1 class="text-2xl font-bold tracking-tight">Edit Order ORD-7891</h1>
+            <p class="text-sm text-muted-foreground">Update the order information below.</p>
+          </div>
+
+          <div class="apex-card max-w-2xl">
+            <div class="flex flex-col space-y-1.5 p-6">
+              <h3 class="text-base font-semibold">Order Details</h3>
+              <p class="text-sm text-muted-foreground">Edit the information and save your changes.</p>
+            </div>
+            <div class="p-6 pt-0">
+              <form data-demo-form="Order updated successfully!" class="space-y-6" novalidate>
+                <div data-field class="space-y-2">
+                  <label for="customerName" class="apex-label">Customer Name</label>
+                  <input id="customerName" name="customerName" type="text" required minlength="2" value="Emma Wilson" class="apex-input" />
+                  <p class="apex-field-error"></p>
+                </div>
+                <div data-field class="space-y-2">
+                  <label for="customerEmail" class="apex-label">Customer Email</label>
+                  <input id="customerEmail" name="customerEmail" type="email" required value="emma@example.com" class="apex-input" />
+                  <p class="apex-field-error"></p>
+                </div>
+                <div data-field class="space-y-2">
+                  <label for="productName" class="apex-label">Product Name</label>
+                  <input id="productName" name="productName" type="text" required minlength="2" value="Pro Dashboard License" class="apex-input" />
+                  <p class="apex-field-error"></p>
+                </div>
+                <div data-field class="space-y-2">
+                  <label for="amount" class="apex-label">Amount</label>
+                  <input id="amount" name="amount" type="number" required min="0.01" step="0.01" value="299" class="apex-input" />
+                  <p class="apex-field-error"></p>
+                </div>
+                <div data-field class="space-y-2">
+                  <label for="status" class="apex-label">Status</label>
+                  <div class="relative">
+                    <select id="status" name="status" class="apex-select">
+                      <option value="pending">Pending</option>
+                      <option value="processing">Processing</option>
+                      <option value="completed" selected>Completed</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                    <i data-lucide="chevron-down" class="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"></i>
+                  </div>
+                  <p class="apex-field-error"></p>
+                </div>
+                <div class="flex items-center gap-3 pt-2">
+                  <button type="submit" class="apex-btn apex-btn-primary">Save Changes</button>
+                  <a href="/order-detail.html" class="apex-btn apex-btn-outline">Cancel</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+
+<!-- Mirrored from demo.dashboardpack.com/apex-html/order-edit.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 20 Jul 2026 06:51:08 GMT -->
+</html>
+

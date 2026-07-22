@@ -1,0 +1,287 @@
+<!doctype html><html lang="en">
+<!-- Mirrored from demo.dashboardpack.com/apex-html/docs-charts.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 20 Jul 2026 06:51:24 GMT -->
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Charts Â· Apex Docs</title>
+<script>(function(){try{var t=localStorage.getItem("apex-theme")||"system";var d=t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d);document.documentElement.style.colorScheme=d?"dark":"light";var _ce=document.documentElement;var _ca=localStorage.getItem("apex-accent");if(_ca)_ce.dataset.accent=_ca;var _cr=localStorage.getItem("apex-radius");if(_cr)_ce.style.setProperty("--radius",_cr);var _cd=localStorage.getItem("apex-dir");if(_cd)_ce.dir=_cd;}catch(e){}})();</script>
+  <script type="module" crossorigin src="/assets/icons-CvCjpvea.js"></script>
+  <script type="module" crossorigin src="/assets/tabs-CD3ADGpv.js"></script>
+  <script type="module" crossorigin src="/assets/docs-Xj0E4rHW.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/icons-eA5UIe3R.css">
+</head><body>
+<apex-docs-header></apex-docs-header>
+<div class="mx-auto flex max-w-7xl">
+  <div class="apex-docs-overlay" data-docs-close></div>
+  <aside class="apex-docs-aside shrink-0 border-e border-border"><apex-docs-sidebar active="docs-charts.html"></apex-docs-sidebar></aside>
+  <main class="min-w-0 flex-1 px-4 py-8 sm:px-6 lg:px-12"><article class="mx-auto max-w-3xl">
+
+    <h1 class="text-3xl font-bold tracking-tight">Charts</h1>
+    <p class="mt-2 mb-4 text-sm leading-7 text-foreground/80">
+      Every chart in Apex Dashboard is a single declarative element:
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-chart&gt;</code>. It wraps
+      <a href="https://apexcharts.com/" class="font-medium text-primary hover:underline">ApexCharts</a>, reads its configuration from
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">data-*</code> attributes plus one inline JSON child, and
+      respects the OKLCh design tokens so it looks right in both light and dark modes â€” no JavaScript wiring required per chart.
+    </p>
+
+    <!-- Overview -->
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Overview</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-chart&gt;</code> is a light-DOM custom element
+      defined in <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">src/components/apex-chart.js</code>. On connect it
+      parses its child <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;script type="application/json"&gt;</code>,
+      builds the ApexCharts options from the attributes, and renders into a <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;div&gt;</code>
+      it appends to itself. It also subscribes to theme changes and re-renders with the new palette automatically.
+    </p>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      Because each instance carries its own data, charts are completely independent â€” copy any example, change the JSON, and it works
+      anywhere. Shared axis / grid / tooltip styling comes from
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">baseChartOptions()</code> in
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">src/lib/charts.js</code>.
+    </p>
+
+    <!-- Chart Types -->
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Available Chart Types</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      Set the chart type with <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">data-type</code> (default
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">area</code>).
+    </p>
+    <div class="overflow-x-auto rounded-lg border border-border">
+      <table class="w-full text-sm">
+        <thead><tr class="border-b border-border bg-muted/50">
+          <th class="px-4 py-2 text-start font-medium">data-type</th>
+          <th class="px-4 py-2 text-start font-medium">Renders</th>
+          <th class="px-4 py-2 text-start font-medium">Data shape</th>
+        </tr></thead>
+        <tbody class="text-foreground/80">
+          <tr class="border-b border-border/50"><td class="px-4 py-2 font-mono text-xs">area</td><td class="px-4 py-2">Gradient-filled area</td><td class="px-4 py-2">series + categories</td></tr>
+          <tr class="border-b border-border/50"><td class="px-4 py-2 font-mono text-xs">line</td><td class="px-4 py-2">Line chart</td><td class="px-4 py-2">series + categories</td></tr>
+          <tr class="border-b border-border/50"><td class="px-4 py-2 font-mono text-xs">bar</td><td class="px-4 py-2">Vertical or horizontal bars</td><td class="px-4 py-2">series + categories</td></tr>
+          <tr class="border-b border-border/50"><td class="px-4 py-2 font-mono text-xs">donut</td><td class="px-4 py-2">Donut (62% hole)</td><td class="px-4 py-2">series + labels</td></tr>
+          <tr class="border-b border-border/50"><td class="px-4 py-2 font-mono text-xs">pie</td><td class="px-4 py-2">Pie chart</td><td class="px-4 py-2">series + labels</td></tr>
+          <tr class="border-b border-border/50"><td class="px-4 py-2 font-mono text-xs">radialBar</td><td class="px-4 py-2">Radial gauge</td><td class="px-4 py-2">series + labels</td></tr>
+          <tr><td class="px-4 py-2 font-mono text-xs">radar</td><td class="px-4 py-2">Radar / spider</td><td class="px-4 py-2">series + categories</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="my-4 rounded-lg border border-primary/30 bg-primary/5 p-4">
+      <p class="text-sm leading-7 text-foreground/80">
+        <strong>Note:</strong> for cartesian types (<code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">area</code>,
+        <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">line</code>,
+        <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">bar</code>,
+        <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">radar</code>) the JSON has
+        <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">categories</code>. For circular types
+        (<code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">donut</code>,
+        <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">pie</code>,
+        <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">radialBar</code>)
+        <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">series</code> is a flat number array and you provide
+        <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">labels</code> instead.
+      </p>
+    </div>
+
+    <!-- Attributes -->
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Attributes</h2>
+    <div class="overflow-x-auto rounded-lg border border-border">
+      <table class="w-full text-sm">
+        <thead><tr class="border-b border-border bg-muted/50">
+          <th class="px-4 py-2 text-start font-medium">Attribute</th>
+          <th class="px-4 py-2 text-start font-medium">Values</th>
+          <th class="px-4 py-2 text-start font-medium">Default</th>
+        </tr></thead>
+        <tbody class="text-foreground/80">
+          <tr class="border-b border-border/50"><td class="px-4 py-2 font-mono text-xs">data-type</td><td class="px-4 py-2">area Â· line Â· bar Â· donut Â· pie Â· radialBar Â· radar</td><td class="px-4 py-2 font-mono text-xs">area</td></tr>
+          <tr class="border-b border-border/50"><td class="px-4 py-2 font-mono text-xs">data-colors</td><td class="px-4 py-2">comma list of tokens, e.g. <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">chart-1,chart-2</code></td><td class="px-4 py-2 font-mono text-xs">chart-1</td></tr>
+          <tr class="border-b border-border/50"><td class="px-4 py-2 font-mono text-xs">data-height</td><td class="px-4 py-2">px number</td><td class="px-4 py-2 font-mono text-xs">300</td></tr>
+          <tr class="border-b border-border/50"><td class="px-4 py-2 font-mono text-xs">data-horizontal</td><td class="px-4 py-2"><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">"true"</code> â†’ horizontal bars</td><td class="px-4 py-2 font-mono text-xs">false</td></tr>
+          <tr class="border-b border-border/50"><td class="px-4 py-2 font-mono text-xs">data-stacked</td><td class="px-4 py-2"><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">"true"</code> â†’ stacked series</td><td class="px-4 py-2 font-mono text-xs">false</td></tr>
+          <tr class="border-b border-border/50"><td class="px-4 py-2 font-mono text-xs">data-y-format</td><td class="px-4 py-2">currency Â· compact Â· percent Â· number</td><td class="px-4 py-2 font-mono text-xs">â€”</td></tr>
+          <tr class="border-b border-border/50"><td class="px-4 py-2 font-mono text-xs">data-curve</td><td class="px-4 py-2">smooth Â· straight (line / area)</td><td class="px-4 py-2 font-mono text-xs">smooth</td></tr>
+          <tr><td class="px-4 py-2 font-mono text-xs">data-sparkline</td><td class="px-4 py-2"><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">"true"</code> â†’ no axes/grid (auto when height â‰¤ 64)</td><td class="px-4 py-2 font-mono text-xs">false</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Inline JSON config -->
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Inline JSON Config</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      The data goes in a single child <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;script type="application/json"&gt;</code>.
+      It is parsed once on connect â€” invalid JSON silently aborts the render, so keep it valid.
+    </p>
+    <pre class="apex-code"><code>// Cartesian (area / line / bar / radar)
+{
+  "series": [{ "name": "Revenue", "data": [12, 18, 15, 22, 28, 30] }],
+  "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
+}
+
+// Circular (donut / pie / radialBar)
+{
+  "series": [42, 35, 15, 8],
+  "labels": ["Mobile", "Desktop", "Tablet", "Other"]
+}</code></pre>
+
+    <!-- Chart Colors -->
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Chart Color Palette</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      Five chart colors are defined as OKLCh CSS custom properties in
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">src/styles/main.css</code>, with separate values for light
+      and dark modes: <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">--chart-1</code> through
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">--chart-5</code>. Pass them to
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">data-colors</code> by token name (without the leading dashes).
+      The component resolves each token to its computed value at render time and re-resolves it on theme change, which keeps colors
+      correct when the user toggles dark mode.
+    </p>
+    <pre class="apex-code"><code>&lt;apex-chart data-type="bar" data-colors="chart-1,chart-3,chart-5" ...&gt;</code></pre>
+    <div class="apex-card my-4 p-4">
+      <div class="flex flex-wrap items-center gap-4">
+        <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full" style="background-color:var(--chart-1)"></span><span class="text-xs text-muted-foreground">chart-1</span></div>
+        <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full" style="background-color:var(--chart-2)"></span><span class="text-xs text-muted-foreground">chart-2</span></div>
+        <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full" style="background-color:var(--chart-3)"></span><span class="text-xs text-muted-foreground">chart-3</span></div>
+        <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full" style="background-color:var(--chart-4)"></span><span class="text-xs text-muted-foreground">chart-4</span></div>
+        <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full" style="background-color:var(--chart-5)"></span><span class="text-xs text-muted-foreground">chart-5</span></div>
+      </div>
+    </div>
+
+    <!-- Value formatting -->
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Value Formatting</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">data-y-format</code> applies a formatter to the value axis
+      and tooltip (for horizontal bars it formats the x-axis instead):
+    </p>
+    <div class="overflow-x-auto rounded-lg border border-border">
+      <table class="w-full text-sm">
+        <thead><tr class="border-b border-border bg-muted/50">
+          <th class="px-4 py-2 text-start font-medium">Value</th>
+          <th class="px-4 py-2 text-start font-medium">Example output</th>
+        </tr></thead>
+        <tbody class="text-foreground/80">
+          <tr class="border-b border-border/50"><td class="px-4 py-2 font-mono text-xs">currency</td><td class="px-4 py-2 font-mono text-xs">$1,250</td></tr>
+          <tr class="border-b border-border/50"><td class="px-4 py-2 font-mono text-xs">compact</td><td class="px-4 py-2 font-mono text-xs">$28k</td></tr>
+          <tr class="border-b border-border/50"><td class="px-4 py-2 font-mono text-xs">percent</td><td class="px-4 py-2 font-mono text-xs">42%</td></tr>
+          <tr><td class="px-4 py-2 font-mono text-xs">number</td><td class="px-4 py-2 font-mono text-xs">12,847</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Live examples -->
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Live Examples</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      The charts below are real <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-chart&gt;</code> elements
+      rendering on this page.
+    </p>
+
+    <h3 class="mt-6 mb-2 text-base font-semibold">Area</h3>
+    <pre class="apex-code"><code>&lt;apex-chart data-type="area" data-colors="chart-1" data-height="240" data-y-format="compact"&gt;
+  &lt;script type="application/json"&gt;
+    { "series": [{ "name": "Revenue", "data": [12000,18000,15000,22000,28000,30000] }],
+      "categories": ["Jan","Feb","Mar","Apr","May","Jun"] }
+  &lt;/script&gt;
+&lt;/apex-chart&gt;</code></pre>
+    <div class="apex-card my-4 p-4">
+      <apex-chart data-type="area" data-colors="chart-1" data-height="240" data-y-format="compact">
+        <script type="application/json">
+          { "series": [{ "name": "Revenue", "data": [12000,18000,15000,22000,28000,30000] }],
+            "categories": ["Jan","Feb","Mar","Apr","May","Jun"] }
+        </script>
+      </apex-chart>
+    </div>
+
+    <h3 class="mt-6 mb-2 text-base font-semibold">Bar</h3>
+    <pre class="apex-code"><code>&lt;apex-chart data-type="bar" data-colors="chart-2" data-height="240" data-y-format="number"&gt;
+  &lt;script type="application/json"&gt;
+    { "series": [{ "name": "Orders", "data": [320,340,365,350,390,410] }],
+      "categories": ["Jan","Feb","Mar","Apr","May","Jun"] }
+  &lt;/script&gt;
+&lt;/apex-chart&gt;</code></pre>
+    <div class="apex-card my-4 p-4">
+      <apex-chart data-type="bar" data-colors="chart-2" data-height="240" data-y-format="number">
+        <script type="application/json">
+          { "series": [{ "name": "Orders", "data": [320,340,365,350,390,410] }],
+            "categories": ["Jan","Feb","Mar","Apr","May","Jun"] }
+        </script>
+      </apex-chart>
+    </div>
+
+    <h3 class="mt-6 mb-2 text-base font-semibold">Donut</h3>
+    <pre class="apex-code"><code>&lt;apex-chart data-type="donut" data-colors="chart-1,chart-2,chart-3,chart-5"
+            data-height="280" data-y-format="percent"&gt;
+  &lt;script type="application/json"&gt;
+    { "series": [42,35,15,8],
+      "labels": ["Mobile","Desktop","Tablet","Other"] }
+  &lt;/script&gt;
+&lt;/apex-chart&gt;</code></pre>
+    <div class="apex-card my-4 p-4">
+      <apex-chart data-type="donut" data-colors="chart-1,chart-2,chart-3,chart-5" data-height="280" data-y-format="percent">
+        <script type="application/json">
+          { "series": [42,35,15,8],
+            "labels": ["Mobile","Desktop","Tablet","Other"] }
+        </script>
+      </apex-chart>
+    </div>
+
+    <!-- Sparklines -->
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Sparklines</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      Small area / line charts render as clean sparklines (no axes, grid or tooltip). Opt in explicitly with
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">data-sparkline="true"</code>, or implicitly by giving a short
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">data-height</code> of 64 or less. This is how the stat cards
+      embed their trend lines.
+    </p>
+    <pre class="apex-code"><code>&lt;apex-chart data-type="area" data-colors="chart-1" data-height="48" data-sparkline="true"&gt;
+  &lt;script type="application/json"&gt;
+    { "series": [{ "name": "Trend", "data": [12,18,15,22,28,30] }] }
+  &lt;/script&gt;
+&lt;/apex-chart&gt;</code></pre>
+    <div class="apex-card my-4 p-4">
+      <apex-chart data-type="area" data-colors="chart-1" data-height="48" data-sparkline="true">
+        <script type="application/json">
+          { "series": [{ "name": "Trend", "data": [12,18,15,22,28,30] }] }
+        </script>
+      </apex-chart>
+    </div>
+
+    <!-- Putting it in a card -->
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Adding a Chart to a Page</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      Wrap the chart in an <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">.apex-card</code> with a header for a
+      finished panel â€” the same pattern used throughout <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">analytics.html</code>
+      and <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">charts.html</code>:
+    </p>
+    <pre class="apex-code"><code>&lt;div class="apex-card"&gt;
+  &lt;div class="flex flex-col space-y-1.5 p-6 pb-2"&gt;
+    &lt;h3 class="text-base font-semibold"&gt;Page Views Over Time&lt;/h3&gt;
+    &lt;p class="text-xs text-muted-foreground"&gt;Monthly visitor traffic trends&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div class="p-6 pt-4"&gt;
+    &lt;apex-chart data-type="line" data-colors="chart-1" data-height="300" data-y-format="number"&gt;
+      &lt;script type="application/json"&gt;
+        { "series": [{ "name": "Visitors", "data": [245,312,278,389,421,385] }],
+          "categories": ["Jan","Feb","Mar","Apr","May","Jun"] }
+      &lt;/script&gt;
+    &lt;/apex-chart&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+    <div class="my-4 rounded-lg border border-primary/30 bg-primary/5 p-4">
+      <p class="text-sm leading-7 text-foreground/80">
+        <strong>Note:</strong> <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-chart&gt;</code> is one of the
+        few custom elements that is <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">display: block</code> (not
+        <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">display: contents</code>), because ApexCharts renders into a
+        real box. For circular charts, constrain the size with a sized wrapper (e.g.
+        <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">class="h-52 w-52"</code>) as
+        <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">charts.html</code> does for the radial gauge.
+      </p>
+    </div>
+
+    <!-- Next steps -->
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Next Steps</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      See the <a href="/docs-components.html" class="font-medium text-primary hover:underline">Components</a> guide for the rest of the
+      building blocks, or <a href="/docs-theming.html" class="font-medium text-primary hover:underline">Theming</a> to customize the
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">--chart-*</code> palette.
+    </p>
+
+  </article></main>
+</div>
+</body>
+<!-- Mirrored from demo.dashboardpack.com/apex-html/docs-charts.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 20 Jul 2026 06:51:24 GMT -->
+</html>
+

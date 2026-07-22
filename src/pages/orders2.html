@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  
+<!-- Mirrored from demo.dashboardpack.com/apex-html/orders.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 20 Jul 2026 06:51:03 GMT -->
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orders · Apex</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("apex-theme") || "system";
+          var dark = t === "dark" || (t === "system" &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var el = document.documentElement;
+          el.classList.toggle("dark", dark);
+          el.style.colorScheme = dark ? "dark" : "light";
+          if (localStorage.getItem("apex-sidebar-collapsed") === "true")
+            el.dataset.sidebarCollapsed = "true";
+                  var _ce=document.documentElement;var _ca=localStorage.getItem("apex-accent");if(_ca)_ce.dataset.accent=_ca;var _cr=localStorage.getItem("apex-radius");if(_cr)_ce.style.setProperty("--radius",_cr);var _cd=localStorage.getItem("apex-dir");if(_cd)_ce.dir=_cd;
+        } catch (e) {}
+      })();
+    </script>
+    <script type="module" crossorigin src="/assets/icons-CvCjpvea.js"></script>
+    <script type="module" crossorigin src="/assets/toast-CYCf26qJ.js"></script>
+    <script type="module" crossorigin src="/assets/tabs-CD3ADGpv.js"></script>
+    <script type="module" crossorigin src="/assets/main-CaHxEhGx.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/icons-eA5UIe3R.css">
+    <script type="module" src="/components/sidebar.js"></script>
+  </head>
+  <body>
+    <div class="flex min-h-screen bg-background">
+      <contex-sidebar active="orders.html"></contex-sidebar>
+      <div class="apex-content flex min-h-screen flex-1 flex-col">
+        <apex-header></apex-header>
+        <main id="main-content" class="flex-1 p-4 sm:p-6">
+          <!-- Page header -->
+          <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div class="space-y-1">
+              <nav class="flex items-center gap-1.5 text-sm text-muted-foreground" aria-label="Breadcrumb">
+                <a href="/index-2.html" class="transition-colors hover:text-foreground">Dashboard</a>
+                <i data-lucide="chevron-right" class="size-3.5"></i>
+                <span class="font-medium text-foreground">Orders</span>
+              </nav>
+              <h1 class="text-2xl font-bold tracking-tight">Orders</h1>
+              <p class="text-sm text-muted-foreground">Manage and track all customer orders.</p>
+            </div>
+            <a href="/order-new.html" class="apex-btn apex-btn-primary shrink-0">
+              <i data-lucide="plus" class="h-4 w-4"></i> New Order
+            </a>
+          </div>
+
+          <apex-data-table data-selectable="true" data-row-href="/order-detail.html" data-export="orders" data-search="Search orders..." data-page-size="10">
+            <script type="application/json">
+            {
+              "idKey": "id",
+              "emptyMessage": "No orders found.",
+              "filter": { "key": "status", "tabs": [
+                { "label": "All", "value": "all" },
+                { "label": "Completed", "value": "completed" },
+                { "label": "Processing", "value": "processing" },
+                { "label": "Pending", "value": "pending" },
+                { "label": "Cancelled", "value": "cancelled" }
+              ]},
+              "columns": [
+                { "key": "id", "label": "Order", "type": "mono", "sortable": true, "search": true },
+                { "key": "customerName", "label": "Customer", "type": "entity", "titleKey": "customerName", "subKey": "customerEmail", "initialsKey": "customerInitials", "sortable": true, "search": true },
+                { "key": "productName", "label": "Product", "type": "text", "sortable": true, "search": true },
+                { "key": "status", "label": "Status", "type": "badge", "sortable": true, "map": { "completed": "success", "processing": "default", "pending": "warning", "cancelled": "destructive" } },
+                { "key": "date", "label": "Date", "type": "date", "sortable": true },
+                { "key": "trend", "label": "Trend", "type": "sparkline", "className": "hidden md:table-cell" },
+                { "key": "amount", "label": "Amount", "type": "currency", "sortable": true, "align": "end" },
+                { "type": "actions", "style": "dropdown", "align": "end", "className": "w-10", "actions": [
+                  { "label": "View", "icon": "eye", "href": "order-detail.html" },
+                  { "label": "Edit", "icon": "pencil", "href": "order-edit.html" },
+                  { "label": "Delete", "icon": "trash-2", "action": "delete", "variant": "destructive" }
+                ]}
+              ],
+              "rows": [
+                { "id": "ORD-7891", "customerName": "Emma Wilson", "customerEmail": "emma@example.com", "customerInitials": "EW", "productName": "Pro Dashboard License", "amount": 299, "status": "completed", "date": "Feb 14, 2026", "trend": [120,180,150,220,280,299] },
+                { "id": "ORD-7890", "customerName": "James Chen", "customerEmail": "james@company.io", "customerInitials": "JC", "productName": "Team Plan Upgrade", "amount": 599, "status": "processing", "date": "Feb 14, 2026", "trend": [400,350,480,520,560,599] },
+                { "id": "ORD-7889", "customerName": "Sofia Garcia", "customerEmail": "sofia@startup.co", "customerInitials": "SG", "productName": "Enterprise License", "amount": 1499, "status": "completed", "date": "Feb 13, 2026", "trend": [800,1100,950,1200,1350,1499] },
+                { "id": "ORD-7888", "customerName": "Alex Thompson", "customerEmail": "alex@dev.com", "customerInitials": "AT", "productName": "Single License", "amount": 79, "status": "pending", "date": "Feb 13, 2026", "trend": [40,55,45,60,70,79] },
+                { "id": "ORD-7887", "customerName": "Maria Santos", "customerEmail": "maria@agency.co", "customerInitials": "MS", "productName": "Pro Dashboard License", "amount": 299, "status": "completed", "date": "Feb 12, 2026", "trend": [200,240,180,260,290,299] },
+                { "id": "ORD-7886", "customerName": "David Kim", "customerEmail": "david@tech.io", "customerInitials": "DK", "productName": "Team Plan Upgrade", "amount": 599, "status": "cancelled", "date": "Feb 12, 2026", "trend": [500,480,420,350,300,250] },
+                { "id": "ORD-7885", "customerName": "Lisa Park", "customerEmail": "lisa@design.co", "customerInitials": "LP", "productName": "Pro Dashboard License", "amount": 299, "status": "completed", "date": "Feb 11, 2026", "trend": [150,200,250,270,285,299] },
+                { "id": "ORD-7884", "customerName": "Ryan Mitchell", "customerEmail": "ryan@startup.io", "customerInitials": "RM", "productName": "Enterprise License", "amount": 1499, "status": "completed", "date": "Feb 11, 2026", "trend": [900,1000,1150,1300,1420,1499] },
+                { "id": "ORD-7883", "customerName": "Nina Patel", "customerEmail": "nina@corp.com", "customerInitials": "NP", "productName": "Single License", "amount": 79, "status": "processing", "date": "Feb 10, 2026", "trend": [30,45,50,60,65,79] },
+                { "id": "ORD-7882", "customerName": "Tom Bradley", "customerEmail": "tom@agency.io", "customerInitials": "TB", "productName": "Team Plan Upgrade", "amount": 599, "status": "pending", "date": "Feb 10, 2026", "trend": [300,380,420,480,530,599] },
+                { "id": "ORD-7881", "customerName": "Anna Kowalski", "customerEmail": "anna@dev.co", "customerInitials": "AK", "productName": "Pro Dashboard License", "amount": 299, "status": "completed", "date": "Feb 9, 2026", "trend": [180,200,230,255,275,299] },
+                { "id": "ORD-7880", "customerName": "Chris Lee", "customerEmail": "chris@tech.com", "customerInitials": "CL", "productName": "Starter Plan", "amount": 49, "status": "completed", "date": "Feb 9, 2026", "trend": [20,28,35,40,45,49] },
+                { "id": "ORD-7879", "customerName": "Emma Wilson", "customerEmail": "emma@example.com", "customerInitials": "EW", "productName": "Team Plan Upgrade", "amount": 599, "status": "completed", "date": "Feb 8, 2026", "trend": [350,420,480,520,570,599] },
+                { "id": "ORD-7878", "customerName": "Jake Rivera", "customerEmail": "jake@freelance.io", "customerInitials": "JR", "productName": "Single License", "amount": 79, "status": "cancelled", "date": "Feb 8, 2026", "trend": [70,65,55,45,35,30] },
+                { "id": "ORD-7877", "customerName": "Mia Zhang", "customerEmail": "mia@studio.co", "customerInitials": "MZ", "productName": "Enterprise License", "amount": 1499, "status": "processing", "date": "Feb 7, 2026", "trend": [700,900,1050,1200,1350,1499] },
+                { "id": "ORD-7876", "customerName": "Daniel Olsen", "customerEmail": "dan@build.io", "customerInitials": "DO", "productName": "Pro Dashboard License", "amount": 299, "status": "completed", "date": "Feb 7, 2026", "trend": [100,150,200,240,270,299] },
+                { "id": "ORD-7875", "customerName": "Sofia Garcia", "customerEmail": "sofia@startup.co", "customerInitials": "SG", "productName": "Starter Plan", "amount": 49, "status": "pending", "date": "Feb 6, 2026", "trend": [15,22,30,35,42,49] },
+                { "id": "ORD-7874", "customerName": "Kai Tanaka", "customerEmail": "kai@app.dev", "customerInitials": "KT", "productName": "Team Plan Upgrade", "amount": 599, "status": "completed", "date": "Feb 6, 2026", "trend": [280,380,450,500,560,599] },
+                { "id": "ORD-7873", "customerName": "Olivia Brown", "customerEmail": "olivia@co.uk", "customerInitials": "OB", "productName": "Pro Dashboard License", "amount": 299, "status": "completed", "date": "Feb 5, 2026", "trend": [160,190,220,250,275,299] },
+                { "id": "ORD-7872", "customerName": "Liam Murphy", "customerEmail": "liam@ops.com", "customerInitials": "LM", "productName": "Single License", "amount": 79, "status": "completed", "date": "Feb 5, 2026", "trend": [35,45,55,62,70,79] }
+              ]
+            }
+            </script>
+          </apex-data-table>
+        </main>
+      </div>
+    </div>
+  </body>
+
+<!-- Mirrored from demo.dashboardpack.com/apex-html/orders.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 20 Jul 2026 06:51:03 GMT -->
+</html>
+

@@ -1,0 +1,415 @@
+<!doctype html><html lang="en">
+<!-- Mirrored from demo.dashboardpack.com/apex-html/docs-components.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 20 Jul 2026 06:51:06 GMT -->
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Components Â· Apex Docs</title>
+<script>(function(){try{var t=localStorage.getItem("apex-theme")||"system";var d=t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d);document.documentElement.style.colorScheme=d?"dark":"light";var _ce=document.documentElement;var _ca=localStorage.getItem("apex-accent");if(_ca)_ce.dataset.accent=_ca;var _cr=localStorage.getItem("apex-radius");if(_cr)_ce.style.setProperty("--radius",_cr);var _cd=localStorage.getItem("apex-dir");if(_cd)_ce.dir=_cd;}catch(e){}})();</script>
+  <script type="module" crossorigin src="/assets/icons-CvCjpvea.js"></script>
+  <script type="module" crossorigin src="/assets/tabs-CD3ADGpv.js"></script>
+  <script type="module" crossorigin src="/assets/docs-Xj0E4rHW.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/icons-eA5UIe3R.css">
+</head><body>
+<apex-docs-header></apex-docs-header>
+<div class="mx-auto flex max-w-7xl">
+  <div class="apex-docs-overlay" data-docs-close></div>
+  <aside class="apex-docs-aside shrink-0 border-e border-border"><apex-docs-sidebar active="docs-components.html"></apex-docs-sidebar></aside>
+  <main class="min-w-0 flex-1 px-4 py-8 sm:px-6 lg:px-12"><article class="mx-auto max-w-3xl">
+
+    <h1 class="text-3xl font-bold tracking-tight">Components</h1>
+    <p class="mt-2 mb-4 text-sm leading-7 text-foreground/80">
+      The framework-free Apex Dashboard ships two kinds of reusable building blocks: <strong>CSS component classes</strong>
+      (prefixed <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">apex-</code>) for buttons, inputs, cards
+      and badges, and <strong>web components</strong> (custom elements like
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-sidebar&gt;</code> and
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-data-table&gt;</code>) for the larger,
+      interactive pieces. There is no React, no JSX, and no build-time component model â€” everything is plain HTML you can copy and paste.
+    </p>
+
+    <!-- How components work -->
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">How the Components Work</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      All custom elements are <strong>light-DOM custom elements</strong>: they render their markup directly into the page
+      (no Shadow DOM), so every Tailwind utility class and CSS custom property applies to them exactly as it would to any
+      other element. Layout components such as <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-revenue-chart&gt;</code>
+      use <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">display: contents</code> so their inner
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">col-span-*</code> wrapper participates in the page grid directly.
+    </p>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      Custom elements are registered in <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">src/main.js</code>
+      (dashboard pages) and <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">src/docs.js</code> (docs pages).
+      Drop one module into the page and the elements upgrade automatically:
+    </p>
+    <pre class="apex-code"><code>&lt;!-- at the end of &lt;body&gt; --&gt;
+&lt;script type="module" src="/src/main.js"&gt;&lt;/script&gt;</code></pre>
+
+    <h3 class="mt-6 mb-2 text-base font-semibold">Icons</h3>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      Icons are <a href="../../lucide.dev/index.html" class="font-medium text-primary hover:underline">Lucide</a> (the vanilla
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">lucide</code> package, not
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">lucide-react</code>). Write an
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;i data-lucide="name"&gt;</code> placeholder, then
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">renderIcons()</code> swaps it for an inline SVG.
+      Only a <strong>curated set</strong> of icons is bundled (see <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">src/lib/icons.js</code>)
+      so the page stays lean â€” use a name from that list, or add an import + map entry to enable more.
+    </p>
+    <pre class="apex-code"><code>&lt;i data-lucide="layout-dashboard" class="h-4 w-4"&gt;&lt;/i&gt;
+&lt;i data-lucide="trending-up" class="h-3.5 w-3.5 text-success"&gt;&lt;/i&gt;</code></pre>
+    <div class="my-4 rounded-lg border border-primary/30 bg-primary/5 p-4">
+      <p class="text-sm leading-7 text-foreground/80">
+        <strong>Note:</strong> <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">data-lucide</code> names are
+        kebab-case (<code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">layout-dashboard</code>,
+        <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">trending-up</code>,
+        <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">more-horizontal</code>). After injecting markup
+        dynamically, call <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">renderIcons()</code> again â€” it is
+        idempotent and skips already-rendered icons.
+      </p>
+    </div>
+
+    <!-- ============================ STYLE PRIMITIVES ============================ -->
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Layout</h2>
+
+    <h3 class="mt-6 mb-2 text-base font-semibold">Card</h3>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">.apex-card</code> is the surface for stats, forms and
+      data panels â€” a rounded, bordered card with the <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">--card</code>
+      background and a soft shadow. Header / content / footer are just padded child <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;div&gt;</code>s.
+    </p>
+    <pre class="apex-code"><code>&lt;div class="apex-card"&gt;
+  &lt;div class="p-6 pb-2"&gt;
+    &lt;h3 class="text-base font-semibold"&gt;Revenue&lt;/h3&gt;
+    &lt;p class="text-xs text-muted-foreground"&gt;Monthly total&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div class="p-6 pt-2 text-2xl font-bold"&gt;$48,200&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+    <div class="apex-card my-4">
+      <div class="p-6 pb-2">
+        <h3 class="text-base font-semibold">Revenue</h3>
+        <p class="text-xs text-muted-foreground">Monthly total</p>
+      </div>
+      <div class="p-6 pt-2 text-2xl font-bold tracking-tight">$48,200</div>
+    </div>
+
+    <h3 class="mt-6 mb-2 text-base font-semibold">Separator</h3>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">.apex-separator</code> is a 1px divider line that
+      stretches full width and uses the <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">--border</code> token.
+    </p>
+    <pre class="apex-code"><code>&lt;div class="apex-separator"&gt;&lt;/div&gt;</code></pre>
+    <div class="apex-separator my-4"></div>
+
+    <!-- ============================ BUTTONS ============================ -->
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Button</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      Start with the base <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">.apex-btn</code> class, then add a
+      <strong>variant</strong> and an optional <strong>size</strong>. Use it on any
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;button&gt;</code> or
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;a&gt;</code>.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead><tr class="border-b border-border">
+          <th class="px-3 py-2 text-start font-medium">Class</th>
+          <th class="px-3 py-2 text-start font-medium">Purpose</th>
+        </tr></thead>
+        <tbody class="text-foreground/80">
+          <tr class="border-b border-border/50"><td class="px-3 py-2 font-mono text-xs">apex-btn</td><td class="px-3 py-2">Base button (required)</td></tr>
+          <tr class="border-b border-border/50"><td class="px-3 py-2 font-mono text-xs">apex-btn-primary</td><td class="px-3 py-2">Primary action</td></tr>
+          <tr class="border-b border-border/50"><td class="px-3 py-2 font-mono text-xs">apex-btn-secondary</td><td class="px-3 py-2">Secondary action</td></tr>
+          <tr class="border-b border-border/50"><td class="px-3 py-2 font-mono text-xs">apex-btn-outline</td><td class="px-3 py-2">Bordered / subtle</td></tr>
+          <tr class="border-b border-border/50"><td class="px-3 py-2 font-mono text-xs">apex-btn-ghost</td><td class="px-3 py-2">Transparent, hover-only</td></tr>
+          <tr class="border-b border-border/50"><td class="px-3 py-2 font-mono text-xs">apex-btn-destructive</td><td class="px-3 py-2">Dangerous action</td></tr>
+          <tr class="border-b border-border/50"><td class="px-3 py-2 font-mono text-xs">apex-btn-sm</td><td class="px-3 py-2">Small size (h-8)</td></tr>
+          <tr><td class="px-3 py-2 font-mono text-xs">apex-btn-lg</td><td class="px-3 py-2">Large size (h-10)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <pre class="apex-code"><code>&lt;button class="apex-btn apex-btn-primary"&gt;
+  &lt;i data-lucide="plus" class="h-4 w-4"&gt;&lt;/i&gt; New Order
+&lt;/button&gt;
+&lt;button class="apex-btn apex-btn-outline apex-btn-sm"&gt;Cancel&lt;/button&gt;
+&lt;button class="apex-btn apex-btn-destructive apex-btn-sm"&gt;Delete&lt;/button&gt;</code></pre>
+    <div class="apex-card my-4 p-4">
+      <div class="flex flex-wrap items-center gap-3">
+        <button class="apex-btn apex-btn-primary"><i data-lucide="plus" class="h-4 w-4"></i> New Order</button>
+        <button class="apex-btn apex-btn-secondary">Secondary</button>
+        <button class="apex-btn apex-btn-outline">Outline</button>
+        <button class="apex-btn apex-btn-ghost">Ghost</button>
+        <button class="apex-btn apex-btn-destructive"><i data-lucide="trash-2" class="h-4 w-4"></i> Delete</button>
+        <button class="apex-btn apex-btn-outline apex-btn-sm">Small</button>
+        <button class="apex-btn apex-btn-primary apex-btn-lg">Large</button>
+      </div>
+    </div>
+
+    <!-- ============================ FORM ============================ -->
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Form</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      Form primitives are single classes applied to native elements, so they stay accessible and keyboard-friendly by default.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead><tr class="border-b border-border">
+          <th class="px-3 py-2 text-start font-medium">Class</th>
+          <th class="px-3 py-2 text-start font-medium">Applies to</th>
+        </tr></thead>
+        <tbody class="text-foreground/80">
+          <tr class="border-b border-border/50"><td class="px-3 py-2 font-mono text-xs">apex-input</td><td class="px-3 py-2">&lt;input&gt; â€” text, search, email, number</td></tr>
+          <tr class="border-b border-border/50"><td class="px-3 py-2 font-mono text-xs">apex-textarea</td><td class="px-3 py-2">&lt;textarea&gt; (min-height 5rem)</td></tr>
+          <tr class="border-b border-border/50"><td class="px-3 py-2 font-mono text-xs">apex-select</td><td class="px-3 py-2">&lt;select&gt; (appearance reset, chevron-room padding)</td></tr>
+          <tr class="border-b border-border/50"><td class="px-3 py-2 font-mono text-xs">apex-label</td><td class="px-3 py-2">&lt;label&gt;</td></tr>
+          <tr class="border-b border-border/50"><td class="px-3 py-2 font-mono text-xs">apex-checkbox</td><td class="px-3 py-2">&lt;input type="checkbox"&gt;</td></tr>
+          <tr class="border-b border-border/50"><td class="px-3 py-2 font-mono text-xs">apex-switch</td><td class="px-3 py-2">&lt;input type="checkbox"&gt; styled as a toggle</td></tr>
+          <tr><td class="px-3 py-2 font-mono text-xs">apex-field-error</td><td class="px-3 py-2">inline validation message text</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <pre class="apex-code"><code>&lt;div class="space-y-2"&gt;
+  &lt;label class="apex-label" for="email"&gt;Email&lt;/label&gt;
+  &lt;input id="email" type="email" class="apex-input" placeholder="you@example.com" /&gt;
+&lt;/div&gt;
+
+&lt;textarea class="apex-textarea" placeholder="Notes..."&gt;&lt;/textarea&gt;
+
+&lt;select class="apex-select"&gt;
+  &lt;option&gt;Active&lt;/option&gt;
+  &lt;option&gt;Archived&lt;/option&gt;
+&lt;/select&gt;
+
+&lt;label class="apex-label"&gt;
+  &lt;input type="checkbox" class="apex-checkbox" /&gt; Remember me
+&lt;/label&gt;
+
+&lt;label class="apex-label"&gt;
+  &lt;input type="checkbox" class="apex-switch" /&gt; Email notifications
+&lt;/label&gt;</code></pre>
+    <div class="apex-card my-4 space-y-4 p-4">
+      <div class="space-y-2">
+        <label class="apex-label" for="demo-email">Email</label>
+        <input id="demo-email" type="email" class="apex-input" placeholder="you@example.com" />
+      </div>
+      <div class="space-y-2">
+        <label class="apex-label" for="demo-notes">Notes</label>
+        <textarea id="demo-notes" class="apex-textarea" placeholder="Add a note..."></textarea>
+      </div>
+      <div class="space-y-2">
+        <label class="apex-label" for="demo-status">Status</label>
+        <div class="relative">
+          <select id="demo-status" class="apex-select"><option>Active</option><option>Archived</option></select>
+          <i data-lucide="chevron-down" class="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"></i>
+        </div>
+      </div>
+      <label class="apex-label"><input type="checkbox" class="apex-checkbox" checked /> Remember me</label>
+      <label class="apex-label"><input type="checkbox" class="apex-switch" checked /> Email notifications</label>
+    </div>
+
+    <!-- ============================ DATA DISPLAY ============================ -->
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Data Display</h2>
+
+    <h3 class="mt-6 mb-2 text-base font-semibold">Badge</h3>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      Badges are small status pills. There is no single class â€” they are a short utility recipe with a color pair drawn from the
+      semantic tokens (<code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">success</code>,
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">primary</code>,
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">warning</code>,
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">destructive</code>). The
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-data-table&gt;</code> uses the same recipe for its
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">badge</code> column type.
+    </p>
+    <pre class="apex-code"><code>&lt;span class="inline-flex items-center rounded-md px-2 py-0.5
+  text-[11px] font-medium bg-success/15 text-success"&gt;completed&lt;/span&gt;
+&lt;span class="... bg-primary/15 text-primary"&gt;processing&lt;/span&gt;
+&lt;span class="... bg-warning/15 text-warning"&gt;pending&lt;/span&gt;
+&lt;span class="... bg-destructive/15 text-destructive"&gt;cancelled&lt;/span&gt;</code></pre>
+    <div class="apex-card my-4 p-4">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="inline-flex items-center rounded-md bg-success/15 px-2 py-0.5 text-[11px] font-medium text-success">completed</span>
+        <span class="inline-flex items-center rounded-md bg-primary/15 px-2 py-0.5 text-[11px] font-medium text-primary">processing</span>
+        <span class="inline-flex items-center rounded-md bg-warning/15 px-2 py-0.5 text-[11px] font-medium text-warning">pending</span>
+        <span class="inline-flex items-center rounded-md bg-destructive/15 px-2 py-0.5 text-[11px] font-medium text-destructive">cancelled</span>
+        <span class="inline-flex items-center rounded-md border border-border px-2 py-0.5 text-[11px] font-medium text-foreground">outline</span>
+      </div>
+    </div>
+
+    <h3 class="mt-6 mb-2 text-base font-semibold">Tabs</h3>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      A tab list is a flex row with a muted background; each tab uses
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">.apex-tab</code> and the active one adds
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">.apex-tab-active</code>. Interactivity is wired by
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">initTabs()</code> in
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">src/lib/tabs.js</code>.
+    </p>
+    <pre class="apex-code"><code>&lt;div class="inline-flex gap-1 rounded-lg bg-muted p-1"&gt;
+  &lt;button class="apex-tab apex-tab-active"&gt;Overview&lt;/button&gt;
+  &lt;button class="apex-tab"&gt;Activity&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+    <div class="my-4 inline-flex gap-1 rounded-lg bg-muted p-1">
+      <button class="apex-tab apex-tab-active">Overview</button>
+      <button class="apex-tab">Activity</button>
+      <button class="apex-tab">Settings</button>
+    </div>
+
+    <!-- ============================ WEB COMPONENTS ============================ -->
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Layout Web Components</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      These elements build the dashboard chrome and the home page. They read mock data from
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">src/lib/data.js</code> and have no attributes â€” drop them
+      in and they render. They are <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">display: contents</code>
+      (except where noted) so the inner grid wrappers slot into the page layout.
+    </p>
+
+    <h3 class="mt-6 mb-2 text-base font-semibold">&lt;apex-sidebar&gt; &amp; &lt;apex-header&gt;</h3>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-sidebar&gt;</code> is the collapsible left navigation
+      (it also reads the <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">apex-sidebar-collapsed</code> localStorage
+      flag set by the no-flash head script). <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-header&gt;</code>
+      is the top bar with search, theme toggle and notifications. Every dashboard page wires them together with the
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">.apex-content</code> wrapper that offsets the main area by the sidebar width.
+    </p>
+    <pre class="apex-code"><code>&lt;div class="flex min-h-screen bg-background"&gt;
+  &lt;apex-sidebar&gt;&lt;/apex-sidebar&gt;
+  &lt;div class="apex-content flex min-h-screen flex-1 flex-col"&gt;
+    &lt;apex-header&gt;&lt;/apex-header&gt;
+    &lt;main id="main-content" class="flex-1 p-4 sm:p-6"&gt;
+      &lt;!-- page content --&gt;
+    &lt;/main&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+    <h3 class="mt-6 mb-2 text-base font-semibold">&lt;apex-stats-cards&gt;</h3>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      Four metric cards (revenue, users, orders, views), each with a trend indicator and an ApexCharts area sparkline pinned to the
+      bottom edge. Renders the <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">statsData</code> array.
+    </p>
+    <pre class="apex-code"><code>&lt;apex-stats-cards&gt;&lt;/apex-stats-cards&gt;</code></pre>
+
+    <h3 class="mt-6 mb-2 text-base font-semibold">&lt;apex-revenue-chart&gt;</h3>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      The main overview chart with Revenue / Orders / Profit tabs. Revenue and Profit render as gradient area charts; Orders renders
+      as a bar chart. Spans 8 of 12 grid columns on wide screens.
+    </p>
+    <pre class="apex-code"><code>&lt;div class="grid grid-cols-1 gap-4 xl:grid-cols-12"&gt;
+  &lt;apex-revenue-chart&gt;&lt;/apex-revenue-chart&gt;
+  &lt;apex-side-panel&gt;&lt;/apex-side-panel&gt;
+&lt;/div&gt;</code></pre>
+
+    <h3 class="mt-6 mb-2 text-base font-semibold">&lt;apex-side-panel&gt;</h3>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      A traffic-sources donut chart plus monthly goal progress bars. Spans 4 of 12 grid columns, designed to sit beside
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-revenue-chart&gt;</code>.
+    </p>
+    <pre class="apex-code"><code>&lt;apex-side-panel&gt;&lt;/apex-side-panel&gt;</code></pre>
+
+    <h3 class="mt-6 mb-2 text-base font-semibold">&lt;apex-orders-table&gt;</h3>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      A compact recent-orders table (static markup, no JS table engine). For the full interactive table use
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-data-table&gt;</code> below.
+    </p>
+    <pre class="apex-code"><code>&lt;apex-orders-table&gt;&lt;/apex-orders-table&gt;</code></pre>
+
+    <h3 class="mt-6 mb-2 text-base font-semibold">&lt;apex-activity-feed&gt;</h3>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      A recent-activity timeline reading <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">activitiesData</code>.
+      Spans 4 of 12 grid columns, pairs with <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-orders-table&gt;</code>.
+    </p>
+    <pre class="apex-code"><code>&lt;apex-activity-feed&gt;&lt;/apex-activity-feed&gt;</code></pre>
+
+    <!-- ============================ DATA COMPONENTS ============================ -->
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Data Components</h2>
+
+    <h3 class="mt-6 mb-2 text-base font-semibold">&lt;apex-chart&gt;</h3>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      A generic, config-driven chart powered by ApexCharts. Each instance carries its own data in a child
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;script type="application/json"&gt;</code>, so charts share
+      no state and stay copy-pasteable. The full attribute reference and more live examples are on the
+      <a href="/docs-charts.html" class="font-medium text-primary hover:underline">Charts</a> page.
+    </p>
+    <pre class="apex-code"><code>&lt;apex-chart data-type="area" data-colors="chart-1" data-height="300" data-y-format="compact"&gt;
+  &lt;script type="application/json"&gt;
+    { "series": [{ "name": "Revenue", "data": [12,18,15,22,28,30] }],
+      "categories": ["Jan","Feb","Mar","Apr","May","Jun"] }
+  &lt;/script&gt;
+&lt;/apex-chart&gt;</code></pre>
+
+    <h3 class="mt-6 mb-2 text-base font-semibold">&lt;apex-data-table&gt;</h3>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      A fully interactive, config-driven table: sorting, global search, filter tabs, pagination, row selection with bulk delete,
+      row-click navigation, dropdown or inline row actions, sparkline cells and CSV export. Behaviour is controlled with
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">data-*</code> attributes; the data and columns live in one
+      inline JSON child.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead><tr class="border-b border-border">
+          <th class="px-3 py-2 text-start font-medium">Attribute</th>
+          <th class="px-3 py-2 text-start font-medium">Meaning</th>
+        </tr></thead>
+        <tbody class="text-foreground/80">
+          <tr class="border-b border-border/50"><td class="px-3 py-2 font-mono text-xs">data-search</td><td class="px-3 py-2">Search input placeholder</td></tr>
+          <tr class="border-b border-border/50"><td class="px-3 py-2 font-mono text-xs">data-selectable</td><td class="px-3 py-2"><code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">"true"</code> adds row checkboxes + bulk delete</td></tr>
+          <tr class="border-b border-border/50"><td class="px-3 py-2 font-mono text-xs">data-row-href</td><td class="px-3 py-2">Row-click target, e.g. <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">order-detail.html</code> (supports <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">{id}</code> tokens)</td></tr>
+          <tr class="border-b border-border/50"><td class="px-3 py-2 font-mono text-xs">data-export</td><td class="px-3 py-2">Adds an Export button; value is the CSV filename</td></tr>
+          <tr><td class="px-3 py-2 font-mono text-xs">data-page-size</td><td class="px-3 py-2">Initial rows per page (default 10)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="mb-4 mt-4 text-sm leading-7 text-foreground/80">
+      Column <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">type</code> values:
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">text</code>,
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">mono</code>,
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">entity</code>,
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">badge</code>,
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">currency</code>,
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">number</code>,
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">date</code>,
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">sparkline</code> and
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">actions</code>.
+    </p>
+    <pre class="apex-code"><code>&lt;apex-data-table data-selectable="true" data-row-href="/order-detail.html"
+                 data-export="orders" data-search="Search orders..." data-page-size="10"&gt;
+  &lt;script type="application/json"&gt;
+  {
+    "idKey": "id",
+    "filter": { "key": "status", "tabs": [
+      { "label": "All", "value": "all" },
+      { "label": "Completed", "value": "completed" }
+    ]},
+    "columns": [
+      { "key": "id", "label": "Order", "type": "mono", "sortable": true, "search": true },
+      { "key": "status", "label": "Status", "type": "badge",
+        "map": { "completed": "success", "pending": "warning" } },
+      { "key": "amount", "label": "Amount", "type": "currency", "sortable": true, "align": "end" },
+      { "type": "actions", "style": "dropdown", "align": "end", "actions": [
+        { "label": "View", "icon": "eye", "href": "order-detail.html" },
+        { "label": "Delete", "icon": "trash-2", "action": "delete", "variant": "destructive" }
+      ]}
+    ],
+    "rows": [
+      { "id": "ORD-7891", "status": "completed", "amount": 299 },
+      { "id": "ORD-7888", "status": "pending", "amount": 79 }
+    ]
+  }
+  &lt;/script&gt;
+&lt;/apex-data-table&gt;</code></pre>
+    <div class="my-4 rounded-lg border border-primary/30 bg-primary/5 p-4">
+      <p class="text-sm leading-7 text-foreground/80">
+        <strong>Tip:</strong> set <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">"search": true</code> on the
+        columns that the global search box should match, and <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">"sortable": true</code>
+        on the columns the header should sort by. See <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">orders.html</code>
+        for a complete real-world configuration.
+      </p>
+    </div>
+
+    <!-- ============================ NEXT STEPS ============================ -->
+    <h2 class="mt-10 mb-3 text-xl font-semibold tracking-tight">Next Steps</h2>
+    <p class="mb-4 text-sm leading-7 text-foreground/80">
+      Read the <a href="/docs-charts.html" class="font-medium text-primary hover:underline">Charts</a> guide for the full
+      <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.8em]">&lt;apex-chart&gt;</code> reference, or see
+      <a href="/docs-theming.html" class="font-medium text-primary hover:underline">Theming</a> to customize the design tokens these
+      components are built on.
+    </p>
+
+  </article></main>
+</div>
+</body>
+<!-- Mirrored from demo.dashboardpack.com/apex-html/docs-components.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 20 Jul 2026 06:51:06 GMT -->
+</html>
+
