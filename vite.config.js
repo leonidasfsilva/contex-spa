@@ -1,5 +1,6 @@
 import { existsSync, mkdirSync, readdirSync, renameSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
+import vue from '@vitejs/plugin-vue'
 import { defineConfig, normalizePath } from 'vite'
 
 const pagePath = (name) => normalizePath(`${process.cwd()}/src/pages/${name}`)
@@ -61,7 +62,17 @@ function flattenPageOutputs() {
 }
 
 export default defineConfig({
-  plugins: [servePagesFromSrc(), flattenPageOutputs()],
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => tag.startsWith('apex-') || tag.startsWith('contex-'),
+        },
+      },
+    }),
+    servePagesFromSrc(),
+    flattenPageOutputs(),
+  ],
   build: {
     rollupOptions: {
       input: {

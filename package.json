@@ -15,17 +15,23 @@
     "@eslint/js": "^9.39.5",
     "@rolldown/binding-win32-x64-msvc": "^1.1.5",
     "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-vue": "^6.0.8",
     "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-vue": "^10.10.0",
     "globals": "^17.7.0",
     "prettier": "^3.9.5",
     "tailwindcss": "^4.3.3",
     "vite": "^8.1.1"
   },
   "dependencies": {
+    "@lucide/vue": "^1.25.0",
     "apexcharts": "^6.3.0",
     "axios": "^1.18.1",
     "lucide": "^1.25.0",
-    "sortablejs": "^1.15.7"
+    "pinia": "^3.0.4",
+    "sortablejs": "^1.15.7",
+    "vue": "^3.5.40",
+    "vue-router": "^4.6.4"
   }
 }

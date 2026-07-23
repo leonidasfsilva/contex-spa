@@ -28,6 +28,21 @@ const docsNav = ['book-open', 'Documentation', 'docs.html'];
 
 function pageName() { return window.location.pathname.split('/').pop() || 'index.html'; }
 
+function authUser() {
+  const user = window.contexAuthUser || {};
+  const name = user.nome || user.name || 'Usuário Contex';
+  const role = user.perfil || user.role || user.permissao || 'Usuário';
+  const initials = name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part.charAt(0))
+    .join('')
+    .toUpperCase();
+
+  return { name, role, initials: initials || 'CX' };
+}
+
 function item([icon, label, href, badge], active) {
   const name = href.split('/').pop();
   const selected = name === (active === 'index.html' ? 'index.html' : active);
@@ -44,7 +59,11 @@ function group({ label, items }, active) {
 class ContexSidebar extends HTMLElement {
   connectedCallback() {
     const active = (this.getAttribute('active') || pageName()).split('/').pop() || 'index.html';
-    this.innerHTML = `<div class="apex-sidebar-overlay fixed inset-0 z-40 bg-black/50 lg:hidden" data-mobile-close></div><aside class="apex-sidebar-aside h-screen border-e border-sidebar-border bg-sidebar"><div class="flex h-16 items-center gap-3 border-b border-sidebar-border px-4"><div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary"><i data-lucide="zap" class="h-4 w-4 text-sidebar-primary-foreground"></i></div><div class="sidebar-brand-text flex flex-col"><span class="text-sm font-bold tracking-tight text-sidebar-foreground">Apex</span><span class="text-[10px] font-medium uppercase tracking-widest text-sidebar-foreground/40">Dashboard</span></div><button type="button" data-mobile-close aria-label="Close sidebar" class="ms-auto flex h-7 w-7 items-center justify-center rounded-md text-sidebar-foreground/50 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground lg:hidden"><i data-lucide="x" class="h-4 w-4"></i></button></div><nav aria-label="Main navigation" class="scrollbar-fade flex-1 space-y-3 overflow-y-auto px-3 py-4">${navGroups.map((entry) => group(entry, active)).join('')}<div class="my-2 border-t border-sidebar-border"></div>${group(systemNav, active)}<div class="my-2 border-t border-sidebar-border"></div>${item(docsNav, active)}</nav><div class="border-t border-sidebar-border p-3"><div class="flex items-center gap-2"><a href="#" class="flex flex-1 items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-sidebar-accent/50"><div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-sidebar-primary/80 to-sidebar-primary text-[11px] font-bold text-sidebar-primary-foreground">AS</div><div class="sidebar-user-info flex flex-1 flex-col"><span class="text-sm font-medium text-sidebar-foreground">Aigars S.</span><span class="text-[11px] text-sidebar-foreground/50">Admin</span></div></a><button type="button" aria-label="Log out" class="sidebar-logout rounded-md p-1.5 text-sidebar-foreground/40 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground/70"><i data-lucide="log-out" class="h-4 w-4"></i></button></div></div><button type="button" data-collapse-toggle aria-label="Toggle sidebar" class="apex-collapse-btn absolute -right-3 top-20 h-6 w-6 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-md transition-all hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><i data-lucide="chevron-left" class="apex-collapse-icon h-3.5 w-3.5 mx-auto transition-transform duration-300"></i></button></aside>`;
+    const user = authUser();
+    this.innerHTML = `<div class="apex-sidebar-overlay fixed inset-0 z-40 bg-black/50 lg:hidden" data-mobile-close></div><aside class="apex-sidebar-aside h-screen border-e border-sidebar-border bg-sidebar"><div class="flex h-16 items-center gap-3 border-b border-sidebar-border px-4"><div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary"><i data-lucide="zap" class="h-4 w-4 text-sidebar-primary-foreground"></i></div><div class="sidebar-brand-text flex flex-col"><span class="text-sm font-bold tracking-tight text-sidebar-foreground">Contex</span><span class="text-[10px] font-medium uppercase tracking-widest text-sidebar-foreground/40">SPA</span></div><button type="button" data-mobile-close aria-label="Close sidebar" class="ms-auto flex h-7 w-7 items-center justify-center rounded-md text-sidebar-foreground/50 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground lg:hidden"><i data-lucide="x" class="h-4 w-4"></i></button></div><nav aria-label="Main navigation" class="scrollbar-fade flex-1 space-y-3 overflow-y-auto px-3 py-4">${navGroups.map((entry) => group(entry, active)).join('')}<div class="my-2 border-t border-sidebar-border"></div>${group(systemNav, active)}<div class="my-2 border-t border-sidebar-border"></div>${item(docsNav, active)}</nav><div class="border-t border-sidebar-border p-3"><div class="flex items-center gap-2"><a href="#" class="flex flex-1 items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-sidebar-accent/50"><div data-auth-initials class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-sidebar-primary/80 to-sidebar-primary text-[11px] font-bold text-sidebar-primary-foreground"></div><div class="sidebar-user-info flex flex-1 flex-col"><span data-auth-name class="text-sm font-medium text-sidebar-foreground"></span><span data-auth-role class="text-[11px] text-sidebar-foreground/50"></span></div></a><button type="button" aria-label="Sair" class="sidebar-logout rounded-md p-1.5 text-sidebar-foreground/40 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground/70"><i data-lucide="log-out" class="h-4 w-4"></i></button></div></div><button type="button" data-collapse-toggle aria-label="Toggle sidebar" class="apex-collapse-btn absolute -right-3 top-20 h-6 w-6 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-md transition-all hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><i data-lucide="chevron-left" class="apex-collapse-icon h-3.5 w-3.5 mx-auto transition-transform duration-300"></i></button></aside>`;
+    this.querySelector('[data-auth-initials]').textContent = user.initials;
+    this.querySelector('[data-auth-name]').textContent = user.name;
+    this.querySelector('[data-auth-role]').textContent = user.role;
     createIcons({ root: this, icons });
     this.querySelector('[data-collapse-toggle]')?.addEventListener('click', () => {
       const collapsed = document.documentElement.dataset.sidebarCollapsed !== 'true';
@@ -57,6 +76,9 @@ class ContexSidebar extends HTMLElement {
       const body = button.nextElementSibling; const closed = !body.hasAttribute('hidden');
       body.toggleAttribute('hidden', closed); button.querySelector('.sidebar-group-chevron')?.classList.toggle('rotate-90', !closed);
     }));
+    this.querySelector('.sidebar-logout')?.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('contex:logout'));
+    });
   }
 }
 
