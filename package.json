@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview --host contex-spa.localhost --port 4838",
     "lint": "eslint .",
+    "test": "node --test",
     "format": "prettier --write ."
   },
   "devDependencies": {
@@ -23,6 +24,7 @@
   },
   "dependencies": {
     "apexcharts": "^6.3.0",
+    "axios": "^1.18.1",
     "lucide": "^1.25.0",
     "sortablejs": "^1.15.7"
   }
