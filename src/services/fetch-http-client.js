@@ -1,23 +1,29 @@
-import { http as fetchHttp } from './http.js'
+import { HttpError, createFetchHttpClient } from './http.js'
 
 export class FetchHttpClient {
+    constructor(config = {}) {
+        this.client = createFetchHttpClient(config)
+    }
+
     get(...args) {
-        return fetchHttp.get(...args)
+        return this.client.get(...args)
     }
 
     post(...args) {
-        return fetchHttp.post(...args)
+        return this.client.post(...args)
     }
 
     put(...args) {
-        return fetchHttp.put(...args)
+        return this.client.put(...args)
     }
 
     patch(...args) {
-        return fetchHttp.patch(...args)
+        return this.client.patch(...args)
     }
 
     delete(...args) {
-        return fetchHttp.delete(...args)
+        return this.client.delete(...args)
     }
 }
+
+export { HttpError }

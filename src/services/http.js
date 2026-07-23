@@ -48,12 +48,17 @@ function errorMessage(response, data) {
     return typeof data === 'string' && data ? data : response.statusText
 }
 
-async function request(method, path, options = {}) {
+async function request(method, path, options = {}, config = {}) {
     const { query, body, headers, ...fetchOptions } = options
+    const csrfToken = config.getCsrfToken?.()
     const requestHeaders = new Headers({
         Accept: 'application/json',
         ...headers,
     })
+
+    if (csrfToken) {
+        requestHeaders.set('X-CSRF-TOKEN', csrfToken)
+    }
 
     const hasJsonBody = body !== undefined && !(body instanceof FormData)
 
@@ -71,6 +76,10 @@ async function request(method, path, options = {}) {
     const data = await parseResponse(response)
 
     if (!response.ok) {
+        if ([401, 403, 419].includes(response.status)) {
+            config.onAuthFailure?.(response.status)
+        }
+
         throw new HttpError(errorMessage(response, data), {
             status: response.status,
             data,
@@ -81,20 +90,24 @@ async function request(method, path, options = {}) {
     return data
 }
 
-export const http = {
-    get(path, options) {
-        return request('GET', path, options)
-    },
-    post(path, body, options = {}) {
-        return request('POST', path, { ...options, body })
-    },
-    put(path, body, options = {}) {
-        return request('PUT', path, { ...options, body })
-    },
-    patch(path, body, options = {}) {
-        return request('PATCH', path, { ...options, body })
-    },
-    delete(path, options) {
-        return request('DELETE', path, options)
-    },
+export function createFetchHttpClient(config = {}) {
+    return {
+        get(path, options) {
+            return request('GET', path, options, config)
+        },
+        post(path, body, options = {}) {
+            return request('POST', path, { ...options, body }, config)
+        },
+        put(path, body, options = {}) {
+            return request('PUT', path, { ...options, body }, config)
+        },
+        patch(path, body, options = {}) {
+            return request('PATCH', path, { ...options, body }, config)
+        },
+        delete(path, options) {
+            return request('DELETE', path, options, config)
+        },
+    }
 }
+
+export const http = createFetchHttpClient()

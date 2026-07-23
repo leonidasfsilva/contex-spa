@@ -10,6 +10,10 @@ if (!apiBaseUrl) {
 
 export class AxiosHttpClient {
     constructor(config = {}) {
+        const { getCsrfToken, onAuthFailure, ...axiosConfig } = config
+
+        this.getCsrfToken = getCsrfToken
+        this.onAuthFailure = onAuthFailure
         this.client = axios.create({
             baseURL: apiBaseUrl,
             withCredentials: true,
@@ -19,16 +23,22 @@ export class AxiosHttpClient {
             paramsSerializer: {
                 serialize: (params) => createSearchParams(params).toString(),
             },
-            ...config,
+            ...axiosConfig,
         })
     }
 
     async request(method, path, options = {}) {
         const { query, body, ...config } = options
+        const csrfToken = this.getCsrfToken?.()
+        const headers = {
+            ...config.headers,
+            ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {}),
+        }
 
         try {
             const response = await this.client.request({
                 ...config,
+                headers,
                 method,
                 url: path,
                 params: query,
@@ -42,6 +52,11 @@ export class AxiosHttpClient {
             }
 
             const { data, status } = error.response
+
+            if ([401, 403, 419].includes(status)) {
+                this.onAuthFailure?.(status)
+            }
+
             const message =
                 data && typeof data === 'object'
                     ? data.message || data.error || error.message
