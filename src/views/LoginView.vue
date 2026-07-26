@@ -2,6 +2,8 @@
 import { Eye, EyeOff, LoaderCircle, LockKeyhole, Mail, Zap } from '@lucide/vue'
 import { computed, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { safeRedirectPath } from '../router/safe-redirect.js'
+import { readSessionDraft } from '../services/session-drafts.js'
 import { useAuthStore } from '../stores/auth.js'
 
 const auth = useAuthStore()
@@ -15,15 +17,27 @@ const form = reactive({
 })
 
 const unavailable = computed(() => route.query.unavailable === '1')
+const sessionExpired = computed(() => route.query.sessionExpired === '1')
 
 async function submit() {
     errorMessage.value = ''
 
     try {
         await auth.login(form)
-        const destination =
-            typeof route.query.redirect === 'string' ? route.query.redirect : '/'
+        const destination = safeRedirectPath(route.query.redirect)
         await router.replace(destination)
+
+        if (typeof route.query.draft === 'string') {
+            const draft = readSessionDraft(route.query.draft)
+
+            if (draft?.route === destination) {
+                window.dispatchEvent(
+                    new CustomEvent('contex:session-draft-restored', {
+                        detail: { key: route.query.draft, draft },
+                    }),
+                )
+            }
+        }
     } catch (error) {
         if (error?.status === 401) {
             errorMessage.value = 'E-mail ou senha inválidos.'
@@ -69,12 +83,15 @@ async function submit() {
 
                 <div class="form-heading">
                     <p class="form-eyebrow">Bem-vindo de volta</p>
-                    <h2>Entre na sua conta</h2>
+                    <h2>Acesse sua conta</h2>
                     <p>Use as mesmas credenciais do Contex.</p>
                 </div>
 
                 <p v-if="unavailable && !errorMessage" class="form-alert" role="alert">
-                    O Contex não respondeu à consulta da sessão. Tente entrar novamente.
+                    API indisponível no momento. Tente novamente mais tarde.
+                </p>
+                <p v-if="sessionExpired && !errorMessage" class="form-alert" role="alert">
+                    Sua sessão expirou. Entre novamente para continuar.
                 </p>
                 <p v-if="errorMessage" class="form-alert" role="alert">
                     {{ errorMessage }}

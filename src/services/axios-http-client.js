@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { HttpError } from './http.js'
 import { createSearchParams } from './query-params.js'
+import { saveSessionDraft } from './session-drafts.js'
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '')
 
@@ -10,10 +11,11 @@ if (!apiBaseUrl) {
 
 export class AxiosHttpClient {
     constructor(config = {}) {
-        const { getCsrfToken, onAuthFailure, ...axiosConfig } = config
+        const { getCsrfToken, onAuthFailure, beforeWrite, ...axiosConfig } = config
 
         this.getCsrfToken = getCsrfToken
         this.onAuthFailure = onAuthFailure
+        this.beforeWrite = beforeWrite
         this.client = axios.create({
             baseURL: apiBaseUrl,
             withCredentials: true,
@@ -28,7 +30,13 @@ export class AxiosHttpClient {
     }
 
     async request(method, path, options = {}) {
-        const { query, body, ...config } = options
+        const { query, body, sessionDraft, ...config } = options
+        const normalizedMethod = method.toUpperCase()
+
+        if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(normalizedMethod)) {
+            await this.beforeWrite?.({ method: normalizedMethod, path })
+        }
+
         const csrfToken = this.getCsrfToken?.()
         const headers = {
             ...config.headers,
@@ -39,7 +47,7 @@ export class AxiosHttpClient {
             const response = await this.client.request({
                 ...config,
                 headers,
-                method,
+                method: normalizedMethod,
                 url: path,
                 params: query,
                 data: body,
@@ -53,8 +61,18 @@ export class AxiosHttpClient {
 
             const { data, status } = error.response
 
+            if (status === 401 && sessionDraft) {
+                saveSessionDraft({
+                    ...sessionDraft,
+                    data: sessionDraft.data ?? body,
+                })
+            }
+
             if ([401, 403, 419].includes(status)) {
-                this.onAuthFailure?.(status)
+                this.onAuthFailure?.(status, {
+                    code: data?.code,
+                    draftKey: sessionDraft?.key,
+                })
             }
 
             const message =

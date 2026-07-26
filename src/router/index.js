@@ -58,6 +58,19 @@ router.beforeEach(async (to) => {
         return { name: 'dashboard' }
     }
 
+    if (to.meta.guestOnly && !unavailable && to.query.unavailable === '1') {
+        const query = { ...to.query }
+        delete query.unavailable
+
+        return {
+            name: to.name,
+            params: to.params,
+            query,
+            hash: to.hash,
+            replace: true,
+        }
+    }
+
     return true
 })
 

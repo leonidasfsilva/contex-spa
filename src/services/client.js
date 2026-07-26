@@ -3,11 +3,12 @@ import { FetchHttpClient } from './fetch-http-client.js'
 
 const HttpClient = AxiosHttpClient
 let csrfToken = null
+let beforeWrite = null
 
-function notifyAuthFailure(status) {
+function notifyAuthFailure(status, context = {}) {
     window.dispatchEvent(
         new CustomEvent('contex:http-auth-failure', {
-            detail: { status },
+            detail: { status, ...context },
         }),
     )
 }
@@ -15,10 +16,15 @@ function notifyAuthFailure(status) {
 export const http = new HttpClient({
     getCsrfToken: () => csrfToken,
     onAuthFailure: notifyAuthFailure,
+    beforeWrite: (request) => beforeWrite?.(request),
 })
 
 export function setHttpCsrfToken(token) {
     csrfToken = token || null
+}
+
+export function setHttpBeforeWrite(handler) {
+    beforeWrite = typeof handler === 'function' ? handler : null
 }
 
 export { AxiosHttpClient, FetchHttpClient }

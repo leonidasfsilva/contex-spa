@@ -1,4 +1,5 @@
 import { createSearchParams } from './query-params.js'
+import { saveSessionDraft } from './session-drafts.js'
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '')
 
@@ -49,7 +50,13 @@ function errorMessage(response, data) {
 }
 
 async function request(method, path, options = {}, config = {}) {
-    const { query, body, headers, ...fetchOptions } = options
+    const { query, body, headers, sessionDraft, ...fetchOptions } = options
+    const normalizedMethod = method.toUpperCase()
+
+    if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(normalizedMethod)) {
+        await config.beforeWrite?.({ method: normalizedMethod, path })
+    }
+
     const csrfToken = config.getCsrfToken?.()
     const requestHeaders = new Headers({
         Accept: 'application/json',
@@ -68,7 +75,7 @@ async function request(method, path, options = {}, config = {}) {
 
     const response = await fetch(buildUrl(path, query), {
         ...fetchOptions,
-        method,
+        method: normalizedMethod,
         headers: requestHeaders,
         credentials: 'include',
         body: body === undefined ? undefined : hasJsonBody ? JSON.stringify(body) : body,
@@ -76,8 +83,18 @@ async function request(method, path, options = {}, config = {}) {
     const data = await parseResponse(response)
 
     if (!response.ok) {
+        if (response.status === 401 && sessionDraft) {
+            saveSessionDraft({
+                ...sessionDraft,
+                data: sessionDraft.data ?? body,
+            })
+        }
+
         if ([401, 403, 419].includes(response.status)) {
-            config.onAuthFailure?.(response.status)
+            config.onAuthFailure?.(response.status, {
+                code: data?.code,
+                draftKey: sessionDraft?.key,
+            })
         }
 
         throw new HttpError(errorMessage(response, data), {
