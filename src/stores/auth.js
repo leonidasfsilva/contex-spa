@@ -1,6 +1,17 @@
 import { defineStore } from 'pinia'
 import { authService } from '../services/auth-service.js'
-import { setHttpCsrfToken } from '../services/client.js'
+import { setHttpBeforeWrite, setHttpCsrfToken } from '../services/client.js'
+
+const SESSION_FRESHNESS_MS = 60 * 1000
+let revalidationPromise = null
+
+export class SessionExpiredError extends Error {
+    constructor() {
+        super('Sua sessão expirou. Entre novamente para continuar.')
+        this.name = 'SessionExpiredError'
+        this.status = 401
+    }
+}
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
@@ -10,6 +21,8 @@ export const useAuthStore = defineStore('auth', {
         authenticated: false,
         restoreAttempted: false,
         loading: false,
+        revalidating: false,
+        lastValidatedAt: null,
     }),
 
     actions: {
@@ -18,6 +31,7 @@ export const useAuthStore = defineStore('auth', {
             this.permissions = session.permissions
             this.csrfToken = session.csrfToken
             this.authenticated = session.authenticated
+            this.lastValidatedAt = Date.now()
             setHttpCsrfToken(session.csrfToken)
             window.contexAuthUser = session.user
         },
@@ -27,6 +41,7 @@ export const useAuthStore = defineStore('auth', {
             this.permissions = []
             this.csrfToken = null
             this.authenticated = false
+            this.lastValidatedAt = null
             setHttpCsrfToken(null)
             window.contexAuthUser = null
         },
@@ -43,27 +58,53 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
-        async restoreSession() {
-            if (this.restoreAttempted) {
+        async restoreSession({ force = false } = {}) {
+            if (this.restoreAttempted && !force) {
                 return
             }
 
-            this.loading = true
-
-            try {
-                const session = await authService.restoreSession()
-                this.applySession(session)
-            } catch (error) {
-                if (error?.status === 401) {
-                    this.clearSession()
-                    return
-                }
-
-                throw error
-            } finally {
-                this.restoreAttempted = true
-                this.loading = false
+            if (revalidationPromise) {
+                return revalidationPromise
             }
+
+            this.loading = !force
+            this.revalidating = force
+
+            revalidationPromise = (async () => {
+                try {
+                    const session = await authService.restoreSession()
+                    this.applySession(session)
+                    return session
+                } catch (error) {
+                    if (error?.status === 401) {
+                        this.clearSession()
+                        return null
+                    }
+
+                    throw error
+                } finally {
+                    this.restoreAttempted = true
+                    this.loading = false
+                    this.revalidating = false
+                    revalidationPromise = null
+                }
+            })()
+
+            return revalidationPromise
+        },
+
+        async ensureSessionFresh() {
+            const sessionIsFresh =
+                this.authenticated &&
+                this.lastValidatedAt &&
+                Date.now() - this.lastValidatedAt < SESSION_FRESHNESS_MS
+
+            if (sessionIsFresh) {
+                return true
+            }
+
+            await this.restoreSession({ force: true })
+            return this.authenticated
         },
 
         async logout() {
@@ -79,3 +120,22 @@ export const useAuthStore = defineStore('auth', {
         },
     },
 })
+
+export function installAuthHttpGuard(auth) {
+    setHttpBeforeWrite(async ({ path }) => {
+        if (path === '/auth/login') {
+            return
+        }
+
+        await auth.ensureSessionFresh()
+
+        if (!auth.authenticated) {
+            window.dispatchEvent(
+                new CustomEvent('contex:http-auth-failure', {
+                    detail: { status: 401 },
+                }),
+            )
+            throw new SessionExpiredError()
+        }
+    })
+}
