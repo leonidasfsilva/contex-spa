@@ -3,7 +3,6 @@ import { Eye, EyeOff, LoaderCircle, LockKeyhole, Mail, Zap } from '@lucide/vue'
 import { computed, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { safeRedirectPath } from '../router/safe-redirect.js'
-import { isApiUnavailable } from '../services/api-availability.js'
 import { readSessionDraft } from '../services/session-drafts.js'
 import { useAuthStore } from '../stores/auth.js'
 
@@ -17,7 +16,7 @@ const form = reactive({
     password: '',
 })
 
-const unavailable = computed(() => isApiUnavailable(route))
+const unavailable = computed(() => auth.apiUnavailable)
 const sessionExpired = computed(() => route.query.sessionExpired === '1')
 
 async function submit() {
@@ -44,6 +43,11 @@ async function submit() {
             }
         }
     } catch (error) {
+        if (auth.apiUnavailable) {
+            errorMessage.value = ''
+            return
+        }
+
         if (error?.status === 401) {
             errorMessage.value = 'E-mail ou senha inválidos.'
             return
@@ -142,6 +146,10 @@ async function submit() {
 
                 <button
                     class="submit-button"
+                    :class="{
+                        'is-loading': auth.loading,
+                        'is-unavailable': unavailable,
+                    }"
                     type="submit"
                     :disabled="auth.loading || unavailable"
                 >
@@ -343,8 +351,15 @@ async function submit() {
 }
 
 .submit-button:disabled {
-    cursor: wait;
     opacity: 0.65;
+}
+
+.submit-button.is-loading {
+    cursor: wait;
+}
+
+.submit-button.is-unavailable {
+    cursor: not-allowed;
 }
 
 .spinner {

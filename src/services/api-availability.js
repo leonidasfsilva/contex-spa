@@ -1,3 +1,3 @@
-export function isApiUnavailable(route) {
-    return route.query.unavailable === '1'
+export function isApiUnavailableError(error) {
+    return !error?.status || error.status >= 500
 }

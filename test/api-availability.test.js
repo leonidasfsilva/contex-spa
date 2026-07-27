@@ -1,9 +1,15 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { isApiUnavailable } from '../src/services/api-availability.js'
+import { isApiUnavailableError } from '../src/services/api-availability.js'
 
-test('marks the API unavailable only for the explicit router flag', () => {
-    assert.equal(isApiUnavailable({ query: { unavailable: '1' } }), true)
-    assert.equal(isApiUnavailable({ query: { unavailable: '0' } }), false)
-    assert.equal(isApiUnavailable({ query: {} }), false)
+test('marks network and server errors as API unavailable', () => {
+    assert.equal(isApiUnavailableError(new TypeError('Network error')), true)
+    assert.equal(isApiUnavailableError({ status: 503 }), true)
+    assert.equal(isApiUnavailableError({ status: 500 }), true)
+})
+
+test('does not mark authentication and validation errors as unavailable', () => {
+    assert.equal(isApiUnavailableError({ status: 401 }), false)
+    assert.equal(isApiUnavailableError({ status: 403 }), false)
+    assert.equal(isApiUnavailableError({ status: 422 }), false)
 })

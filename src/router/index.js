@@ -34,13 +34,12 @@ const router = createRouter({
 
 router.beforeEach(async (to) => {
     const auth = useAuthStore()
-    let unavailable = false
 
     if (!auth.restoreAttempted) {
         try {
             await auth.restoreSession()
         } catch {
-            unavailable = true
+            // A store mantém o estado operacional da API para a tela de login.
         }
     }
 
@@ -49,26 +48,12 @@ router.beforeEach(async (to) => {
             name: 'login',
             query: {
                 redirect: to.fullPath,
-                ...(unavailable ? { unavailable: '1' } : {}),
             },
         }
     }
 
     if (to.meta.guestOnly && auth.authenticated) {
         return { name: 'dashboard' }
-    }
-
-    if (to.meta.guestOnly && !unavailable && to.query.unavailable === '1') {
-        const query = { ...to.query }
-        delete query.unavailable
-
-        return {
-            name: to.name,
-            params: to.params,
-            query,
-            hash: to.hash,
-            replace: true,
-        }
     }
 
     return true
