@@ -146,6 +146,10 @@ async function submit() {
 
                 <button
                     class="submit-button"
+                    :class="{
+                        'is-loading': auth.loading,
+                        'is-unavailable': unavailable,
+                    }"
                     type="submit"
                     :disabled="auth.loading || unavailable"
                 >
@@ -347,8 +351,15 @@ async function submit() {
 }
 
 .submit-button:disabled {
-    cursor: wait;
     opacity: 0.65;
+}
+
+.submit-button.is-loading {
+    cursor: wait;
+}
+
+.submit-button.is-unavailable {
+    cursor: not-allowed;
 }
 
 .spinner {
