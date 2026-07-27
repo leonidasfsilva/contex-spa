@@ -3,6 +3,7 @@ import { Eye, EyeOff, LoaderCircle, LockKeyhole, Mail, Zap } from '@lucide/vue'
 import { computed, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { safeRedirectPath } from '../router/safe-redirect.js'
+import { isApiUnavailable } from '../services/api-availability.js'
 import { readSessionDraft } from '../services/session-drafts.js'
 import { useAuthStore } from '../stores/auth.js'
 
@@ -16,10 +17,14 @@ const form = reactive({
     password: '',
 })
 
-const unavailable = computed(() => route.query.unavailable === '1')
+const unavailable = computed(() => isApiUnavailable(route))
 const sessionExpired = computed(() => route.query.sessionExpired === '1')
 
 async function submit() {
+    if (unavailable.value) {
+        return
+    }
+
     errorMessage.value = ''
 
     try {
@@ -135,14 +140,24 @@ async function submit() {
                     </span>
                 </label>
 
-                <button class="submit-button" type="submit" :disabled="auth.loading">
+                <button
+                    class="submit-button"
+                    type="submit"
+                    :disabled="auth.loading || unavailable"
+                >
                     <LoaderCircle
                         v-if="auth.loading"
                         class="spinner"
                         :size="18"
                         aria-hidden="true"
                     />
-                    {{ auth.loading ? 'Entrando...' : 'Entrar' }}
+                    {{
+                        auth.loading
+                            ? 'Entrando...'
+                            : unavailable
+                              ? 'API indisponível'
+                              : 'Entrar'
+                    }}
                 </button>
             </form>
         </section>
