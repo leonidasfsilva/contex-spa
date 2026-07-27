@@ -25,6 +25,7 @@ export const useAuthStore = defineStore('auth', {
         revalidating: false,
         lastValidatedAt: null,
         apiUnavailable: false,
+        sessionExpired: false,
     }),
 
     actions: {
@@ -34,6 +35,7 @@ export const useAuthStore = defineStore('auth', {
             this.csrfToken = session.csrfToken
             this.authenticated = session.authenticated
             this.apiUnavailable = false
+            this.sessionExpired = false
             this.lastValidatedAt = Date.now()
             setHttpCsrfToken(session.csrfToken)
             window.contexAuthUser = session.user
@@ -47,6 +49,10 @@ export const useAuthStore = defineStore('auth', {
             this.lastValidatedAt = null
             setHttpCsrfToken(null)
             window.contexAuthUser = null
+        },
+
+        markSessionExpired() {
+            this.sessionExpired = true
         },
 
         async login(credentials) {
@@ -83,8 +89,18 @@ export const useAuthStore = defineStore('auth', {
                     return session
                 } catch (error) {
                     if (error?.status === 401) {
+                        const sessionWasAuthenticated = this.authenticated
+
                         this.apiUnavailable = false
                         this.clearSession()
+
+                        if (
+                            sessionWasAuthenticated ||
+                            error?.data?.code === 'SPA_SESSION_REVOKED'
+                        ) {
+                            this.markSessionExpired()
+                        }
+
                         return null
                     }
 
@@ -118,6 +134,7 @@ export const useAuthStore = defineStore('auth', {
 
         async logout() {
             this.loading = true
+            this.sessionExpired = false
 
             try {
                 await authService.logout()

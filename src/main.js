@@ -36,6 +36,10 @@ window.addEventListener('contex:http-auth-failure', ({ detail }) => {
     if (detail.status === 401) {
         const redirect = router.currentRoute.value.fullPath
 
+        if (auth.authenticated || detail.code === 'SPA_SESSION_REVOKED') {
+            auth.markSessionExpired()
+        }
+
         auth.clearSession()
 
         if (router.currentRoute.value.name !== 'login') {
