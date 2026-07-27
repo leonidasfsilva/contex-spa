@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { authService } from '../services/auth-service.js'
+import { isApiUnavailableError } from '../services/api-availability.js'
 import { setHttpBeforeWrite, setHttpCsrfToken } from '../services/client.js'
 
 const SESSION_FRESHNESS_MS = 60 * 1000
@@ -23,6 +24,7 @@ export const useAuthStore = defineStore('auth', {
         loading: false,
         revalidating: false,
         lastValidatedAt: null,
+        apiUnavailable: false,
     }),
 
     actions: {
@@ -31,6 +33,7 @@ export const useAuthStore = defineStore('auth', {
             this.permissions = session.permissions
             this.csrfToken = session.csrfToken
             this.authenticated = session.authenticated
+            this.apiUnavailable = false
             this.lastValidatedAt = Date.now()
             setHttpCsrfToken(session.csrfToken)
             window.contexAuthUser = session.user
@@ -53,6 +56,9 @@ export const useAuthStore = defineStore('auth', {
                 const session = await authService.login(credentials)
                 this.applySession(session)
                 this.restoreAttempted = true
+            } catch (error) {
+                this.apiUnavailable = isApiUnavailableError(error)
+                throw error
             } finally {
                 this.loading = false
             }
@@ -77,9 +83,12 @@ export const useAuthStore = defineStore('auth', {
                     return session
                 } catch (error) {
                     if (error?.status === 401) {
+                        this.apiUnavailable = false
                         this.clearSession()
                         return null
                     }
+
+                    this.apiUnavailable = isApiUnavailableError(error)
 
                     throw error
                 } finally {
