@@ -138,12 +138,14 @@ export const useAuthStore = defineStore('auth', {
 
         async logout() {
             this.loading = true
-            this.intentionalLogout = true
             this.sessionExpired = false
+            let completed = false
 
             try {
                 await authService.logout()
+                completed = true
             } finally {
+                this.intentionalLogout = completed
                 this.clearSession()
                 this.restoreAttempted = true
                 this.loading = false
