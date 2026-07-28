@@ -18,7 +18,11 @@ installSessionLifecycle({
     revalidate: async () => {
         await auth.restoreSession({ force: true })
 
-        if (!auth.authenticated && router.currentRoute.value.name !== 'login') {
+        if (
+            !auth.intentionalLogout &&
+            !auth.authenticated &&
+            router.currentRoute.value.name !== 'login'
+        ) {
             await router.push({
                 name: 'login',
                 query: {
@@ -34,6 +38,10 @@ window.addEventListener('contex:http-auth-failure', ({ detail }) => {
     const auth = useAuthStore(pinia)
 
     if (detail.status === 401) {
+        if (auth.intentionalLogout) {
+            return
+        }
+
         const redirect = router.currentRoute.value.fullPath
 
         if (auth.authenticated || detail.code === 'SPA_SESSION_REVOKED') {

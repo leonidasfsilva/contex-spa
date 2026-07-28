@@ -23,6 +23,7 @@ export const useAuthStore = defineStore('auth', {
         restoreAttempted: false,
         loading: false,
         revalidating: false,
+        intentionalLogout: false,
         lastValidatedAt: null,
         apiUnavailable: false,
         sessionExpired: false,
@@ -35,6 +36,7 @@ export const useAuthStore = defineStore('auth', {
             this.csrfToken = session.csrfToken
             this.authenticated = session.authenticated
             this.apiUnavailable = false
+            this.intentionalLogout = false
             this.sessionExpired = false
             this.lastValidatedAt = Date.now()
             setHttpCsrfToken(session.csrfToken)
@@ -95,8 +97,10 @@ export const useAuthStore = defineStore('auth', {
                         this.clearSession()
 
                         if (
-                            sessionWasAuthenticated ||
+                            !this.intentionalLogout &&
+                            (sessionWasAuthenticated ||
                             error?.data?.code === 'SPA_SESSION_REVOKED'
+                            )
                         ) {
                             this.markSessionExpired()
                         }
@@ -134,6 +138,7 @@ export const useAuthStore = defineStore('auth', {
 
         async logout() {
             this.loading = true
+            this.intentionalLogout = true
             this.sessionExpired = false
 
             try {
