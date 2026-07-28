@@ -5,6 +5,7 @@ import { setHttpBeforeWrite, setHttpCsrfToken } from '../services/client.js'
 
 const SESSION_FRESHNESS_MS = 60 * 1000
 let revalidationPromise = null
+let sessionGeneration = 0
 
 export class SessionExpiredError extends Error {
     constructor() {
@@ -23,8 +24,11 @@ export const useAuthStore = defineStore('auth', {
         restoreAttempted: false,
         loading: false,
         revalidating: false,
+        intentionalLogout: false,
+        logoutInProgress: false,
         lastValidatedAt: null,
         apiUnavailable: false,
+        sessionExpired: false,
     }),
 
     actions: {
@@ -34,6 +38,9 @@ export const useAuthStore = defineStore('auth', {
             this.csrfToken = session.csrfToken
             this.authenticated = session.authenticated
             this.apiUnavailable = false
+            this.intentionalLogout = false
+            this.logoutInProgress = false
+            this.sessionExpired = false
             this.lastValidatedAt = Date.now()
             setHttpCsrfToken(session.csrfToken)
             window.contexAuthUser = session.user
@@ -47,6 +54,10 @@ export const useAuthStore = defineStore('auth', {
             this.lastValidatedAt = null
             setHttpCsrfToken(null)
             window.contexAuthUser = null
+        },
+
+        markSessionExpired() {
+            this.sessionExpired = true
         },
 
         async login(credentials) {
@@ -75,16 +86,39 @@ export const useAuthStore = defineStore('auth', {
 
             this.loading = !force
             this.revalidating = force
+            const generation = sessionGeneration
 
             revalidationPromise = (async () => {
                 try {
                     const session = await authService.restoreSession()
+
+                    if (generation !== sessionGeneration) {
+                        return null
+                    }
+
                     this.applySession(session)
                     return session
                 } catch (error) {
+                    if (generation !== sessionGeneration) {
+                        return null
+                    }
+
                     if (error?.status === 401) {
+                        const sessionWasAuthenticated = this.authenticated
+
                         this.apiUnavailable = false
                         this.clearSession()
+
+                        if (
+                            !this.logoutInProgress &&
+                            !this.intentionalLogout &&
+                            (sessionWasAuthenticated ||
+                            error?.data?.code === 'SPA_SESSION_REVOKED'
+                            )
+                        ) {
+                            this.markSessionExpired()
+                        }
+
                         return null
                     }
 
@@ -118,10 +152,17 @@ export const useAuthStore = defineStore('auth', {
 
         async logout() {
             this.loading = true
+            this.logoutInProgress = true
+            this.sessionExpired = false
+            sessionGeneration += 1
+            let completed = false
 
             try {
                 await authService.logout()
+                completed = true
             } finally {
+                this.intentionalLogout = completed
+                this.logoutInProgress = false
                 this.clearSession()
                 this.restoreAttempted = true
                 this.loading = false

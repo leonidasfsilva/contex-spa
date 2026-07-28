@@ -1,9 +1,12 @@
 const DEFAULT_BACKGROUND_THRESHOLD_MS = 60 * 1000
+const DEFAULT_REVALIDATION_INTERVAL_MS = 10 * 1000
 
 export function installSessionLifecycle({
     revalidate,
     isAuthenticated,
+    shouldRevalidate = () => true,
     backgroundThresholdMs = DEFAULT_BACKGROUND_THRESHOLD_MS,
+    revalidationIntervalMs = DEFAULT_REVALIDATION_INTERVAL_MS,
     windowTarget = window,
     documentTarget = document,
 }) {
@@ -11,7 +14,7 @@ export function installSessionLifecycle({
     let resumePromise = null
 
     async function resumeIfNeeded() {
-        if (!isAuthenticated() || backgroundedAt === null) {
+        if (!isAuthenticated() || !shouldRevalidate() || backgroundedAt === null) {
             return
         }
 
@@ -50,9 +53,16 @@ export function installSessionLifecycle({
     windowTarget.addEventListener('focus', resumeIfNeeded)
     windowTarget.addEventListener('pageshow', onPageShow)
 
+    const revalidationTimer = windowTarget.setInterval(() => {
+        if (!documentTarget.hidden && isAuthenticated() && shouldRevalidate()) {
+            Promise.resolve(revalidate()).catch(() => {})
+        }
+    }, revalidationIntervalMs)
+
     return () => {
         documentTarget.removeEventListener('visibilitychange', onVisibilityChange)
         windowTarget.removeEventListener('focus', resumeIfNeeded)
         windowTarget.removeEventListener('pageshow', onPageShow)
+        windowTarget.clearInterval(revalidationTimer)
     }
 }

@@ -15,10 +15,16 @@ const auth = useAuthStore(pinia)
 installAuthHttpGuard(auth)
 installSessionLifecycle({
     isAuthenticated: () => auth.authenticated,
+    shouldRevalidate: () => !auth.logoutInProgress && !auth.intentionalLogout,
     revalidate: async () => {
         await auth.restoreSession({ force: true })
 
-        if (!auth.authenticated && router.currentRoute.value.name !== 'login') {
+        if (
+            !auth.logoutInProgress &&
+            !auth.intentionalLogout &&
+            !auth.authenticated &&
+            router.currentRoute.value.name !== 'login'
+        ) {
             await router.push({
                 name: 'login',
                 query: {
@@ -34,7 +40,23 @@ window.addEventListener('contex:http-auth-failure', ({ detail }) => {
     const auth = useAuthStore(pinia)
 
     if (detail.status === 401) {
+        if (detail.path === '/auth/session') {
+            return
+        }
+
+        if (auth.logoutInProgress || auth.intentionalLogout) {
+            if (router.currentRoute.value.name === 'login') {
+                router.replace({ name: 'login' })
+            }
+
+            return
+        }
+
         const redirect = router.currentRoute.value.fullPath
+
+        if (auth.authenticated || detail.code === 'SPA_SESSION_REVOKED') {
+            auth.markSessionExpired()
+        }
 
         auth.clearSession()
 

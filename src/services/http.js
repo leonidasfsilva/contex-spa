@@ -94,6 +94,7 @@ async function request(method, path, options = {}, config = {}) {
             config.onAuthFailure?.(response.status, {
                 code: data?.code,
                 draftKey: sessionDraft?.key,
+                path,
             })
         }
 
