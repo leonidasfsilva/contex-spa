@@ -95,3 +95,28 @@ test('revalidates visible authenticated sessions periodically', async () => {
     await windowTarget.runIntervals()
     assert.equal(calls, 1)
 })
+
+test('does not revalidate while the lifecycle is suspended', async () => {
+    const windowTarget = createTarget()
+    const documentTarget = createTarget({ hidden: false })
+    let suspended = false
+    let calls = 0
+
+    installSessionLifecycle({
+        documentTarget,
+        windowTarget,
+        isAuthenticated: () => true,
+        shouldRevalidate: () => !suspended,
+        revalidate: async () => {
+            calls += 1
+        },
+    })
+
+    suspended = true
+    await windowTarget.runIntervals()
+    assert.equal(calls, 0)
+
+    suspended = false
+    await windowTarget.runIntervals()
+    assert.equal(calls, 1)
+})

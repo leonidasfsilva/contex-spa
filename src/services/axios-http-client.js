@@ -72,6 +72,7 @@ export class AxiosHttpClient {
                 this.onAuthFailure?.(status, {
                     code: data?.code,
                     draftKey: sessionDraft?.key,
+                    path,
                 })
             }
 

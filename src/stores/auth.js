@@ -5,6 +5,7 @@ import { setHttpBeforeWrite, setHttpCsrfToken } from '../services/client.js'
 
 const SESSION_FRESHNESS_MS = 60 * 1000
 let revalidationPromise = null
+let sessionGeneration = 0
 
 export class SessionExpiredError extends Error {
     constructor() {
@@ -85,13 +86,23 @@ export const useAuthStore = defineStore('auth', {
 
             this.loading = !force
             this.revalidating = force
+            const generation = sessionGeneration
 
             revalidationPromise = (async () => {
                 try {
                     const session = await authService.restoreSession()
+
+                    if (generation !== sessionGeneration) {
+                        return null
+                    }
+
                     this.applySession(session)
                     return session
                 } catch (error) {
+                    if (generation !== sessionGeneration) {
+                        return null
+                    }
+
                     if (error?.status === 401) {
                         const sessionWasAuthenticated = this.authenticated
 
@@ -99,6 +110,7 @@ export const useAuthStore = defineStore('auth', {
                         this.clearSession()
 
                         if (
+                            !this.logoutInProgress &&
                             !this.intentionalLogout &&
                             (sessionWasAuthenticated ||
                             error?.data?.code === 'SPA_SESSION_REVOKED'
@@ -142,6 +154,7 @@ export const useAuthStore = defineStore('auth', {
             this.loading = true
             this.logoutInProgress = true
             this.sessionExpired = false
+            sessionGeneration += 1
             let completed = false
 
             try {

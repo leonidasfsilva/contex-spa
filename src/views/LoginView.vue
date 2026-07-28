@@ -17,9 +17,7 @@ const form = reactive({
 })
 
 const unavailable = computed(() => auth.apiUnavailable)
-const sessionExpired = computed(
-    () => auth.sessionExpired || route.query.sessionExpired === '1',
-)
+const sessionExpired = computed(() => route.query.sessionExpired === '1')
 
 async function submit() {
     if (unavailable.value) {

@@ -4,6 +4,7 @@ const DEFAULT_REVALIDATION_INTERVAL_MS = 10 * 1000
 export function installSessionLifecycle({
     revalidate,
     isAuthenticated,
+    shouldRevalidate = () => true,
     backgroundThresholdMs = DEFAULT_BACKGROUND_THRESHOLD_MS,
     revalidationIntervalMs = DEFAULT_REVALIDATION_INTERVAL_MS,
     windowTarget = window,
@@ -13,7 +14,7 @@ export function installSessionLifecycle({
     let resumePromise = null
 
     async function resumeIfNeeded() {
-        if (!isAuthenticated() || backgroundedAt === null) {
+        if (!isAuthenticated() || !shouldRevalidate() || backgroundedAt === null) {
             return
         }
 
@@ -53,7 +54,7 @@ export function installSessionLifecycle({
     windowTarget.addEventListener('pageshow', onPageShow)
 
     const revalidationTimer = windowTarget.setInterval(() => {
-        if (!documentTarget.hidden && isAuthenticated()) {
+        if (!documentTarget.hidden && isAuthenticated() && shouldRevalidate()) {
             Promise.resolve(revalidate()).catch(() => {})
         }
     }, revalidationIntervalMs)
