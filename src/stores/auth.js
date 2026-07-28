@@ -24,6 +24,7 @@ export const useAuthStore = defineStore('auth', {
         loading: false,
         revalidating: false,
         intentionalLogout: false,
+        logoutInProgress: false,
         lastValidatedAt: null,
         apiUnavailable: false,
         sessionExpired: false,
@@ -37,6 +38,7 @@ export const useAuthStore = defineStore('auth', {
             this.authenticated = session.authenticated
             this.apiUnavailable = false
             this.intentionalLogout = false
+            this.logoutInProgress = false
             this.sessionExpired = false
             this.lastValidatedAt = Date.now()
             setHttpCsrfToken(session.csrfToken)
@@ -138,6 +140,7 @@ export const useAuthStore = defineStore('auth', {
 
         async logout() {
             this.loading = true
+            this.logoutInProgress = true
             this.sessionExpired = false
             let completed = false
 
@@ -146,6 +149,7 @@ export const useAuthStore = defineStore('auth', {
                 completed = true
             } finally {
                 this.intentionalLogout = completed
+                this.logoutInProgress = false
                 this.clearSession()
                 this.restoreAttempted = true
                 this.loading = false

@@ -38,7 +38,7 @@ window.addEventListener('contex:http-auth-failure', ({ detail }) => {
     const auth = useAuthStore(pinia)
 
     if (detail.status === 401) {
-        if (auth.intentionalLogout) {
+        if (auth.logoutInProgress || auth.intentionalLogout) {
             if (router.currentRoute.value.name === 'login') {
                 router.replace({ name: 'login' })
             }
