@@ -39,6 +39,10 @@ window.addEventListener('contex:http-auth-failure', ({ detail }) => {
 
     if (detail.status === 401) {
         if (auth.intentionalLogout) {
+            if (router.currentRoute.value.name === 'login') {
+                router.replace({ name: 'login' })
+            }
+
             return
         }
 
