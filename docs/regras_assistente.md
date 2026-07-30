@@ -22,6 +22,9 @@
 - Ao editar textos exibidos ao usuário, preservar acentuação e grafia correta em português do Brasil.
 - Editar e salvar arquivos em UTF-8 real sempre que houver texto acentuado.
 - Após editar textos, validar o diff ou o arquivo por meio confiável em UTF-8.
+- Toda publicação textual externa deve usar o guard comum do projeto pai em `C:\laragon\www\contex\.agents\text\utf8_guard.php`. Isso inclui GitHub, Trello, prompts e qualquer conector futuro com títulos, descrições, comentários, checklists ou mensagens.
+- Não contornar os helpers protegidos com chamadas cruas como `gh api`, `gh pr create`, `curl` ou `Invoke-RestMethod`. Um conector novo deve integrar o guard antes da primeira escrita externa.
+- Após publicar, reler e validar o conteúdo armazenado quando o serviço permitir.
 
 ### 3. Processo de Decisão
 - Responder primeiro às perguntas antes de tomar qualquer ação.
@@ -54,6 +57,7 @@
 - PRs devem apontar para `master`, salvo orientação diferente.
 - Título e descrição devem ser em português do Brasil.
 - Usar as seções `Resumo` e `Validação`.
+- Criar, editar, comentar e validar PRs com `C:\laragon\www\contex\.agents\git\pr.sh`, que protege título e corpo contra mojibake e perda de caracteres.
 - O agente abre o PR; o desenvolvedor sênior revisa e aprova.
 - Não apagar branches sem pedido explícito.
 
