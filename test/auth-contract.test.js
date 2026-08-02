@@ -3,7 +3,7 @@ import test from 'node:test'
 import {
     AUTH_ENDPOINTS,
     createAuthService,
-} from '../src/services/auth-contract.js'
+} from '../src/services/auth/auth-contract.js'
 
 function createClient(response = {}) {
     const calls = []

@@ -1,17 +1,17 @@
 # Autenticação e sessão no Contex SPA
 
-O SPA reutiliza a sessão do Contex MVC. O cookie `app_session` é armazenado e enviado automaticamente pelo navegador; o Vue não lê esse cookie.
+O SPA utiliza a sessão independente da API Frontend. O cookie `api_session` é armazenado e enviado automaticamente pelo navegador; o Vue não lê esse cookie.
 
 ## Configuração pública
 
 - `VITE_APP_URL`: origem pública do SPA.
-- `VITE_API_BASE_URL`: base pública da API, terminando em `/api/v1`.
+- `VITE_API_BASE_URL`: base pública da API, terminando em `/api/frontend/v1`.
 
 Variáveis `VITE_` fazem parte do bundle público. Nunca armazenar nelas senhas, chaves privadas, tokens administrativos ou credenciais de infraestrutura.
 
 ## CSRF
 
-Login e consulta de sessão retornam `csrfToken`. O store mantém esse valor somente em memória, e o cliente HTTP o envia como `X-CSRF-TOKEN` nas escritas. O token CSRF não substitui `app_session` e não autentica o usuário.
+Login e consulta de sessão retornam `csrfToken`. O store mantém esse valor somente em memória, e o cliente HTTP o envia como `X-CSRF-TOKEN` nas escritas. O token CSRF não substitui `api_session` e não autentica o usuário.
 
 ## Retomada do aplicativo
 

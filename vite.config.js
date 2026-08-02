@@ -5,12 +5,24 @@ import { defineConfig, normalizePath } from 'vite'
 
 const pagePath = (name) => normalizePath(`${process.cwd()}/src/pages/${name}`)
 
-const pageNames = readdirSync(join(process.cwd(), 'src/pages'))
-  .filter((name) => name.endsWith('.html'))
-  .sort()
+const pagesDirectory = join(process.cwd(), 'src/pages')
+
+function findHtmlPages(directory, prefix = '') {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const relativePath = prefix ? `${prefix}/${entry.name}` : entry.name
+
+    if (entry.isDirectory()) {
+      return findHtmlPages(join(directory, entry.name), relativePath)
+    }
+
+    return entry.name.endsWith('.html') ? [relativePath] : []
+  })
+}
+
+const pageNames = findHtmlPages(pagesDirectory).sort()
 
 const pageInputs = Object.fromEntries(
-  pageNames.map((name) => [name.replace(/\.html$/, ''), pagePath(name)]),
+  pageNames.map((name) => [name.replace(/[/.]/g, '-'), pagePath(name)]),
 )
 
 function servePagesFromSrc() {
@@ -19,7 +31,10 @@ function servePagesFromSrc() {
     configureServer(server) {
       server.middlewares.use((request, _response, next) => {
         const [pathname, query] = (request.url || '/').split('?')
-        const page = pathname === '/' ? 'index.html' : pathname.slice(1)
+        const requestedPage = pathname === '/' ? 'index.html' : pathname.slice(1)
+        const page = pageNames.includes(requestedPage)
+          ? requestedPage
+          : `others/${requestedPage}`
 
         if (pageNames.includes(page)) {
           request.url = `/src/pages/${page}${query ? `?${query}` : ''}`
@@ -45,7 +60,9 @@ function flattenPageOutputs() {
 
       for (const pageName of pageNames) {
         const nestedPath = join(outputDir, 'src', 'pages', pageName)
-        const rootPath = join(outputDir, pageName)
+        const rootPath = pageName === 'index.html'
+          ? join(outputDir, pageName)
+          : join(outputDir, pageName.replace(/^others\//, ''))
 
         if (!existsSync(nestedPath)) {
           continue
@@ -90,6 +107,8 @@ export default defineConfig({
       host: 'contex-spa.local',
       protocol: 'wss',
       clientPort: 443,
+      path: '/__vite_hmr',
+      timeout: 60000,
     },
     watch: {
       usePolling: true,
