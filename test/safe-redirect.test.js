@@ -9,5 +9,5 @@ test('accepts internal SPA paths', () => {
 test('rejects external and API destinations', () => {
     assert.equal(safeRedirectPath('https://example.com'), '/')
     assert.equal(safeRedirectPath('//example.com'), '/')
-    assert.equal(safeRedirectPath('/api/v1/auth/session'), '/')
+    assert.equal(safeRedirectPath('/api/frontend/v1/auth/session'), '/')
 })

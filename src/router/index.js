@@ -2,7 +2,8 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
 import DashboardView from '../views/DashboardView.vue'
 import ForbiddenView from '../views/ForbiddenView.vue'
-import LoginView from '../views/LoginView.vue'
+import LancamentosView from '../views/financeiro/LancamentosView.vue'
+import LoginView from '../views/login/LoginView.vue'
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -17,6 +18,12 @@ const router = createRouter({
             path: '/',
             name: 'dashboard',
             component: DashboardView,
+            meta: { requiresAuth: true },
+        },
+        {
+            path: '/lancamentos',
+            name: 'lancamentos',
+            component: LancamentosView,
             meta: { requiresAuth: true },
         },
         {

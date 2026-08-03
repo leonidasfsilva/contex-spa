@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { isApiUnavailableError } from '../src/services/api-availability.js'
+import { isApiUnavailableError } from '../src/services/auth/api-availability.js'
 
 test('marks network and server errors as API unavailable', () => {
     assert.equal(isApiUnavailableError(new TypeError('Network error')), true)

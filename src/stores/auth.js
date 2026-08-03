@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { authService } from '../services/auth-service.js'
-import { isApiUnavailableError } from '../services/api-availability.js'
+import { isApiUnavailableError } from '../services/auth/api-availability.js'
+import { authService } from '../services/auth/auth-service.js'
 import { setHttpBeforeWrite, setHttpCsrfToken } from '../services/client.js'
 
 const SESSION_FRESHNESS_MS = 60 * 1000
@@ -113,7 +113,7 @@ export const useAuthStore = defineStore('auth', {
                             !this.logoutInProgress &&
                             !this.intentionalLogout &&
                             (sessionWasAuthenticated ||
-                            error?.data?.code === 'SPA_SESSION_REVOKED'
+                            error?.data?.code === 'API_SESSION_REVOKED'
                             )
                         ) {
                             this.markSessionExpired()

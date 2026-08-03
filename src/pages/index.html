@@ -24,6 +24,13 @@
 
                     root.classList.toggle('dark', dark)
                     root.style.colorScheme = dark ? 'dark' : 'light'
+
+                    const accent = localStorage.getItem('apex-accent') || 'blue'
+                    root.dataset.accent = accent
+
+                    if (!localStorage.getItem('apex-accent')) {
+                        localStorage.setItem('apex-accent', accent)
+                    }
                 } catch {
                     // The application remains usable when storage is unavailable.
                 }

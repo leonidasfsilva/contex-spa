@@ -2,9 +2,9 @@
 import { Eye, EyeOff, LoaderCircle, LockKeyhole, Mail, Zap } from '@lucide/vue'
 import { computed, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { safeRedirectPath } from '../router/safe-redirect.js'
-import { readSessionDraft } from '../services/session-drafts.js'
-import { useAuthStore } from '../stores/auth.js'
+import { safeRedirectPath } from '../../router/safe-redirect.js'
+import { readSessionDraft } from '../../services/session-drafts.js'
+import { useAuthStore } from '../../stores/auth.js'
 
 const auth = useAuthStore()
 const route = useRoute()
@@ -17,7 +17,7 @@ const form = reactive({
 })
 
 const unavailable = computed(() => auth.apiUnavailable)
-const sessionExpired = computed(() => route.query.sessionExpired === '1')
+const sessionExpired = computed(() => !unavailable.value && route.query.sessionExpired === '1')
 
 async function submit() {
     if (unavailable.value) {
@@ -27,20 +27,18 @@ async function submit() {
     errorMessage.value = ''
 
     try {
+        const draftKey = typeof route.query.draft === 'string' ? route.query.draft : null
+        const draft = draftKey ? readSessionDraft(draftKey) : null
         await auth.login(form)
         const destination = safeRedirectPath(route.query.redirect)
         await router.replace(destination)
 
-        if (typeof route.query.draft === 'string') {
-            const draft = readSessionDraft(route.query.draft)
-
-            if (draft?.route === destination) {
-                window.dispatchEvent(
-                    new CustomEvent('contex:session-draft-restored', {
-                        detail: { key: route.query.draft, draft },
-                    }),
-                )
-            }
+        if (draftKey && draft?.route === destination) {
+            window.dispatchEvent(
+                new CustomEvent('contex:session-draft-restored', {
+                    detail: { key: draftKey, draft },
+                }),
+            )
         }
     } catch (error) {
         if (auth.apiUnavailable) {
@@ -54,13 +52,11 @@ async function submit() {
         }
 
         if (error?.status === 403 || error?.status === 419) {
-            errorMessage.value =
-                'A validação de segurança expirou. Atualize a página e tente novamente.'
+            errorMessage.value = 'A validação de segurança expirou. Atualize a página e tente novamente.'
             return
         }
 
-        errorMessage.value =
-            error?.message || 'Não foi possível conectar ao Contex neste momento.'
+        errorMessage.value = error?.message || 'Não foi possível conectar ao Contex neste momento.'
     }
 }
 </script>
@@ -68,7 +64,9 @@ async function submit() {
 <template>
     <main class="login-page">
         <aside class="login-brand" aria-label="Contex SPA">
-            <div class="brand-mark"><Zap :size="25" aria-hidden="true" /></div>
+            <div class="brand-mark">
+                <Zap :size="25" aria-hidden="true" />
+            </div>
             <div>
                 <p class="brand-name">Contex</p>
                 <p class="brand-product">Single Page Application</p>
@@ -77,8 +75,7 @@ async function submit() {
                 <p class="brand-eyebrow">Gestão financeira</p>
                 <h1>Seus dados, sua rotina, uma interface mais fluida.</h1>
                 <p>
-                    Acesse o mesmo Contex com uma experiência preparada para desktop,
-                    tablet e smartphone.
+                    Acesse o mesmo Contex com uma experiência preparada para desktop, tablet e smartphone.
                 </p>
             </div>
         </aside>
@@ -86,7 +83,9 @@ async function submit() {
         <section class="login-content">
             <form class="login-form" @submit.prevent="submit">
                 <div class="mobile-brand">
-                    <div class="brand-mark"><Zap :size="21" aria-hidden="true" /></div>
+                    <div class="brand-mark">
+                        <Zap :size="21" aria-hidden="true" />
+                    </div>
                     <span>Contex SPA</span>
                 </div>
 
@@ -110,14 +109,8 @@ async function submit() {
                     <span>E-mail</span>
                     <span class="field-control">
                         <Mail :size="18" aria-hidden="true" />
-                        <input
-                            v-model.trim="form.email"
-                            name="email"
-                            type="email"
-                            autocomplete="username"
-                            required
-                            autofocus
-                        />
+                        <input v-model.trim="form.email" name="email" type="email" autocomplete="username" required
+                            autofocus />
                     </span>
                 </label>
 
@@ -125,47 +118,23 @@ async function submit() {
                     <span>Senha</span>
                     <span class="field-control">
                         <LockKeyhole :size="18" aria-hidden="true" />
-                        <input
-                            v-model="form.password"
-                            name="password"
-                            :type="showPassword ? 'text' : 'password'"
-                            autocomplete="current-password"
-                            required
-                        />
-                        <button
-                            class="password-toggle"
-                            type="button"
+                        <input v-model="form.password" name="password" :type="showPassword ? 'text' : 'password'"
+                            autocomplete="current-password" required />
+                        <button class="password-toggle" type="button"
                             :aria-label="showPassword ? 'Ocultar senha' : 'Mostrar senha'"
-                            @click="showPassword = !showPassword"
-                        >
+                            @click="showPassword = !showPassword">
                             <EyeOff v-if="showPassword" :size="18" aria-hidden="true" />
                             <Eye v-else :size="18" aria-hidden="true" />
                         </button>
                     </span>
                 </label>
 
-                <button
-                    class="submit-button"
-                    :class="{
-                        'is-loading': auth.loading,
-                        'is-unavailable': unavailable,
-                    }"
-                    type="submit"
-                    :disabled="auth.loading || unavailable"
-                >
-                    <LoaderCircle
-                        v-if="auth.loading"
-                        class="spinner"
-                        :size="18"
-                        aria-hidden="true"
-                    />
-                    {{
-                        auth.loading
-                            ? 'Entrando...'
-                            : unavailable
-                              ? 'API indisponível'
-                              : 'Entrar'
-                    }}
+                <button class="submit-button" :class="{
+                    'is-loading': auth.loading,
+                    'is-unavailable': unavailable,
+                }" type="submit" :disabled="auth.loading || unavailable">
+                    <LoaderCircle v-if="auth.loading" class="spinner" :size="18" aria-hidden="true" />
+                    {{ auth.loading ? 'Entrando...' : unavailable ? 'API indisponível' : 'Entrar' }}
                 </button>
             </form>
         </section>
@@ -239,7 +208,7 @@ async function submit() {
     line-height: 1.08;
 }
 
-.brand-copy > p:last-child {
+.brand-copy>p:last-child {
     max-width: 30rem;
     margin-top: 1rem;
     color: #94a3b8;
@@ -271,7 +240,7 @@ async function submit() {
     font-weight: 750;
 }
 
-.form-heading > p:last-child {
+.form-heading>p:last-child {
     margin-top: 0.45rem;
     color: var(--muted-foreground);
 }
@@ -291,7 +260,7 @@ async function submit() {
     margin-top: 1.1rem;
 }
 
-.field > span:first-child {
+.field>span:first-child {
     display: block;
     margin-bottom: 0.45rem;
     font-size: 0.82rem;
